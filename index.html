@@ -370,7 +370,7 @@
     </div>
 
     <script>
-        // Configuration - UPDATE THIS WITH YOUR GOOGLE APPS SCRIPT URL
+        // Configuration - Your Google Apps Script URL
         const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby_T2OgWynPXIYIF625O9vxDbfPqhCb0aF3A89NrgN3rKw5CPvx22kJMBjNopQzLKvjdg/exec';
         
         const centers = [
@@ -525,11 +525,6 @@
                 statusMessage.className = 'status-message';
                 statusMessage.textContent = 'Submitting...';
                 statusMessage.style.display = 'block';
-
-                // Check if URL is configured
-                if (GOOGLE_APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycby_T2OgWynPXIYIF625O9vxDbfPqhCb0aF3A89NrgN3rKw5CPvx22kJMBjNopQzLKvjdg/exec') {
-                    throw new Error('Please configure Google Apps Script URL in the code');
-                }
 
                 // Send data to Google Apps Script
                 const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
