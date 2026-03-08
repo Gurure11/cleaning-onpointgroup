@@ -312,11 +312,11 @@
                 </div>
                 <div class="form-group">
                     <label>📅 Date</label>
-                    <input type="date" id="cleaningDate" value="<?php echo date('Y-m-d'); ?>">
+                    <input type="date" id="cleaningDate">
                 </div>
                 <div class="form-group">
                     <label>⏰ Time</label>
-                    <input type="time" id="cleaningTime" value="<?php echo date('H:i'); ?>">
+                    <input type="time" id="cleaningTime">
                 </div>
             </div>
         </div>
@@ -370,6 +370,9 @@
     </div>
 
     <script>
+        // Configuration - UPDATE THIS WITH YOUR GOOGLE APPS SCRIPT URL
+        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxd1yyU8ULPNf2DQ4NK1kltRUuT7L8MCIFYE6gaZPTHjeA0yRoBme301kAGjj_rihnggw/exec';
+        
         const centers = [
             "Onpoint Group Head Office",
             "DI Solutions",
@@ -487,9 +490,12 @@
             const maintenanceArea = document.getElementById('maintenanceArea').value;
             const maintenanceDescription = document.getElementById('maintenanceDescription').value;
 
-            // Get logo data if exists
+            // Get logo data if exists (convert to base64)
             const logoPreview = document.getElementById('logoPreview').querySelector('img');
-            const logoData = logoPreview.src || '';
+            let logoData = '';
+            if (logoPreview && logoPreview.src) {
+                logoData = logoPreview.src;
+            }
 
             return {
                 CleanerName: cleanerName,
@@ -507,8 +513,8 @@
             };
         }
 
-        // Submit to Google Sheets
-        function submitChecklist() {
+        // Submit to Google Sheets via Google Apps Script
+        async function submitChecklist() {
             const submitBtn = document.getElementById('submitBtn');
             const statusMessage = document.getElementById('statusMessage');
             
@@ -520,46 +526,36 @@
                 statusMessage.textContent = 'Submitting...';
                 statusMessage.style.display = 'block';
 
-                // Here you would send the data to Google Apps Script
-                // For now, we'll simulate a successful submission
-                
-                // Uncomment and modify this URL when you deploy your Google Apps Script
-                /*
-                fetch('YOUR_GOOGLE_APPS_SCRIPT_URL', {
+                // Check if URL is configured
+                if (GOOGLE_APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxd1yyU8ULPNf2DQ4NK1kltRUuT7L8MCIFYE6gaZPTHjeA0yRoBme301kAGjj_rihnggw/execE') {
+                    throw new Error('Please configure Google Apps Script URL in the code');
+                }
+
+                // Send data to Google Apps Script
+                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    mode: 'no-cors', // This is needed for Google Apps Script
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(data)
-                })
-                .then(response => {
-                    statusMessage.className = 'status-message success';
-                    statusMessage.textContent = '✓ Cleaning report submitted successfully!';
-                    resetForm();
-                })
-                .catch(error => {
-                    statusMessage.className = 'status-message error';
-                    statusMessage.textContent = 'Error submitting report. Please try again.';
-                })
-                .finally(() => {
-                    submitBtn.disabled = false;
                 });
-                */
 
-                // Simulated successful submission (remove this when using actual fetch)
+                // With no-cors mode, we can't read response
+                // So we assume success if no error thrown
+                statusMessage.className = 'status-message success';
+                statusMessage.textContent = '✓ Cleaning report submitted successfully!';
+                
+                // Reset form after successful submission
                 setTimeout(() => {
-                    statusMessage.className = 'status-message success';
-                    statusMessage.textContent = '✓ Cleaning report submitted successfully!';
-                    submitBtn.disabled = false;
-                    
-                    // Log the data to console (for testing)
-                    console.log('Submitted Data:', data);
-                }, 1500);
+                    resetForm();
+                }, 2000);
 
             } catch (error) {
                 statusMessage.className = 'status-message error';
-                statusMessage.textContent = error.message;
+                statusMessage.textContent = error.message || 'Error submitting report. Please try again.';
+                console.error('Submission error:', error);
+            } finally {
                 submitBtn.disabled = false;
             }
         }
@@ -577,6 +573,18 @@
             document.getElementById('maintenanceCenter').value = '';
             document.getElementById('maintenanceArea').value = '';
             document.getElementById('maintenanceDescription').value = '';
+            
+            // Clear logo preview
+            const logoPreview = document.getElementById('logoPreview');
+            logoPreview.style.display = 'none';
+            logoPreview.querySelector('img').src = '';
+            document.getElementById('logoInput').value = '';
+            
+            // Show success message that fades
+            const statusMessage = document.getElementById('statusMessage');
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
         }
 
         // Initialize on page load
@@ -589,41 +597,6 @@
             document.getElementById('cleaningDate').value = today.toISOString().split('T')[0];
             document.getElementById('cleaningTime').value = today.toTimeString().slice(0,5);
         };
-    </script>
-
-    <!-- Google Apps Script Integration (add this when deploying) -->
-    <script>
-    /*
-    // Google Apps Script Code (paste this in your Google Apps Script editor)
-    function doPost(e) {
-        var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-        var data = JSON.parse(e.postData.contents);
-        
-        // Format data for sheet
-        var row = [
-            data.CleanerName,
-            data.EmployeeId,
-            data.Date,
-            data.Time,
-            data.SubmissionTimestamp,
-            JSON.stringify(data.CleaningData),
-            data.Maintenance.Center,
-            data.Maintenance.Area,
-            data.Maintenance.Description,
-            data.Logo ? 'Logo uploaded' : 'No logo'
-        ];
-        
-        sheet.appendRow(row);
-        
-        return ContentService
-            .createTextOutput(JSON.stringify({result: 'success'}))
-            .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    function doGet() {
-        return HtmlService.createHtmlOutputFromFile('index');
-    }
-    */
     </script>
 </body>
 </html>
