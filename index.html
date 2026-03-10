@@ -32,11 +32,73 @@
             color: white;
             padding: 30px;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
+        }
+
+        /* New Field Cleaners Button - Positioned in Header */
+        .field-btn-container {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+        }
+
+        .btn-field {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #4CAF50;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1em;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-field i {
+            font-size: 1.2em;
+        }
+
+        .btn-field:hover {
+            background: #45a049;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .btn-field:active {
+            transform: translateY(-1px);
+        }
+
+        /* Responsive button positioning */
+        @media (max-width: 768px) {
+            .header {
+                padding-top: 80px;
+            }
+            
+            .field-btn-container {
+                top: 15px;
+                right: 20px;
+                left: 20px;
+                text-align: center;
+            }
+            
+            .btn-field {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
         }
 
         .stats-bar {
@@ -316,6 +378,14 @@
         <div class="header">
             <h1>🧹 Onpoint Task Management System</h1>
             <p>Real-time Task Tracking & Complete Data Collection</p>
+            
+            <!-- New Field Cleaners Button - Positioned at top right -->
+            <div class="field-btn-container">
+                <a href="field.html" class="btn-field">
+                    <i class="fas fa-leaf"></i> Field Cleaners
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
         </div>
 
         <!-- Statistics Bar -->
@@ -399,6 +469,9 @@
         <!-- Timestamp -->
         <div class="global-timestamp" id="globalTimestamp"></div>
     </div>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <script>
         // ============================================
