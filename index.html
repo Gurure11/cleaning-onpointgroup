@@ -404,7 +404,7 @@
         // ============================================
         // CONFIGURATION - UPDATE WITH YOUR APPS SCRIPT URL
         // ============================================
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnAYEyafupiqFHi3qYTd2TIhEho9nhaYLdqflQKG4wX7fDdNB46_ghbyFDHy4llxkRmw/exec';
+        const GOOGLE_APPS_SCRIPT_URL = 'YOUR_DEPLOYED_APPS_SCRIPT_URL_HERE';
 
         // Department definitions with their specific tasks
         const departments = [
@@ -678,9 +678,6 @@
             
             // Update display
             updateRecordsDisplay(taskId);
-            
-            // Log for debugging
-            console.log('Session recorded:', session);
         }
 
         function updateRecordsDisplay(taskId) {
@@ -855,7 +852,6 @@
                     body: JSON.stringify(data)
                 });
 
-                // Since we're using no-cors, we assume success
                 showStatus(statusDiv, `✅ ${data.totalTasks || data.tasks.length} tasks submitted successfully!`, 'success');
                 
                 // Clear submitted sessions if it was a department submission
