@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Onpoint Cleaning - Task Timer System</title>
+    <title>Onpoint Cleaning - Complete Task Timer System</title>
     <style>
         * {
             margin: 0;
@@ -39,6 +39,36 @@
             margin-bottom: 10px;
         }
 
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-top: 5px;
+        }
+
         .staff-info {
             background: #f8f9fa;
             padding: 25px;
@@ -68,6 +98,11 @@
             border: 2px solid #e9ecef;
             border-radius: 8px;
             font-size: 16px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #1e3c72;
         }
 
         .departments-grid {
@@ -209,8 +244,35 @@
             box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
         }
 
+        .global-controls {
+            padding: 20px;
+            background: #e9ecef;
+            text-align: center;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-global {
+            background: #1e3c72;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-global:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
+        }
+
         .status-message {
-            margin-top: 20px;
+            margin: 20px;
             padding: 15px;
             border-radius: 8px;
             display: none;
@@ -243,6 +305,9 @@
             .departments-grid {
                 grid-template-columns: 1fr;
             }
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -250,9 +315,30 @@
     <div class="container">
         <div class="header">
             <h1>🧹 Onpoint Task Management System</h1>
-            <p>Real-time Task Tracking & Time Management</p>
+            <p>Real-time Task Tracking & Complete Data Collection</p>
         </div>
 
+        <!-- Statistics Bar -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="label">Total Tasks</div>
+                <div class="value" id="totalTasks">40</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Completed</div>
+                <div class="value" id="completedTasks">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">In Progress</div>
+                <div class="value" id="inProgressTasks">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Staff On Duty</div>
+                <div class="value" id="staffOnDuty">0</div>
+            </div>
+        </div>
+
+        <!-- Staff Information Section - ALL data collected here -->
         <div class="staff-info">
             <div class="form-grid">
                 <div class="form-group">
@@ -260,33 +346,65 @@
                     <input type="text" id="staffName" placeholder="Enter your full name" required>
                 </div>
                 <div class="form-group">
-                    <label>📋 Employee ID</label>
-                    <input type="text" id="employeeId" placeholder="Enter employee ID">
+                    <label>📋 Employee ID *</label>
+                    <input type="text" id="employeeId" placeholder="Enter employee ID" required>
                 </div>
                 <div class="form-group">
-                    <label>📅 Date</label>
+                    <label>📅 Work Date</label>
                     <input type="date" id="workDate">
                 </div>
                 <div class="form-group">
-                    <label>🏢 Department</label>
-                    <select id="globalDepartment">
-                        <option value="Cleaning">House Keeping</option>
-                        <option value="Maintenance">Field - Outdoor</option>
+                    <label>⏰ Shift Start</label>
+                    <input type="time" id="shiftStart">
+                </div>
+                <div class="form-group">
+                    <label>⏰ Shift End</label>
+                    <input type="time" id="shiftEnd">
+                </div>
+                <div class="form-group">
+                    <label>📍 Work Location</label>
+                    <select id="workLocation">
+                        <option value="">Select location...</option>
+                        <option value="Onpoint Group Head Office">Onpoint Group Head Office</option>
+                        <option value="DI Solutions">DI Solutions</option>
+                        <option value="Aqua Telecoms">Aqua Telecoms</option>
+                        <option value="NKanyezi Projects">NKanyezi Projects</option>
+                        <option value="Onpoint Ontime Solutions">Onpoint Ontime Solutions</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>👔 Supervisor</label>
+                    <input type="text" id="supervisor" placeholder="Supervisor name">
+                </div>
+                <div class="form-group">
+                    <label>📝 Notes</label>
+                    <input type="text" id="globalNotes" placeholder="General notes">
                 </div>
             </div>
         </div>
 
-        <div class="departments-grid" id="departmentsContainer">
-            <!-- Departments will be dynamically generated here -->
+        <!-- Departments Container -->
+        <div class="departments-grid" id="departmentsContainer"></div>
+
+        <!-- Global Control Buttons -->
+        <div class="global-controls">
+            <button class="btn-global" onclick="submitAllDepartments()">📤 SUBMIT ALL DEPARTMENTS</button>
+            <button class="btn-global" onclick="exportAllData()">📊 EXPORT ALL DATA</button>
+            <button class="btn-global" onclick="resetAllTimers()">🔄 RESET ALL</button>
         </div>
 
+        <!-- Status Message -->
+        <div id="globalStatus" class="status-message"></div>
+
+        <!-- Timestamp -->
         <div class="global-timestamp" id="globalTimestamp"></div>
     </div>
 
     <script>
-        // Configuration - Your Google Apps Script URL
-        const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwnAYEyafupiqFHi3qYTd2TIhEho9nhaYLdqflQKG4wX7fDdNB46_ghbyFDHy4llxkRmw/exec';
+        // ============================================
+        // CONFIGURATION - UPDATE WITH YOUR APPS SCRIPT URL
+        // ============================================
+        const GOOGLE_APPS_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
         // Department definitions with their specific tasks
         const departments = [
@@ -297,29 +415,45 @@
             {
                 name: "DI Solutions",
                 tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"]
-
             },
             {
                 name: "Aqua Telecoms",
                 tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"]
-
             },
             {
-                name: "Nkanyezi Projects ",
+                name: "Nkanyezi Projects",
                 tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"]
-
             },
             {
                 name: "Onpoint Ontime Solutions",
                 tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"]
-   }
+            }
         ];
 
-        // Store active timers for each task
+        // Store active timers and records
         const timers = {};
         const timeRecords = {};
+        let completedTasksCount = 0;
+        let inProgressCount = 0;
 
-        // Initialize departments
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        function initializeApp() {
+            initializeDepartments();
+            updateGlobalTimestamp();
+            setInterval(updateGlobalTimestamp, 1000);
+            setInterval(updateStatistics, 1000);
+
+            // Set default date
+            const today = new Date();
+            document.getElementById('workDate').value = today.toISOString().split('T')[0];
+            
+            // Set default shift times
+            document.getElementById('shiftStart').value = '08:00';
+            document.getElementById('shiftEnd').value = '17:00';
+        }
+
         function initializeDepartments() {
             const container = document.getElementById('departmentsContainer');
             container.innerHTML = '';
@@ -340,7 +474,9 @@
             header.className = 'department-header';
             header.innerHTML = `
                 <h3>${department.name}</h3>
-                <div class="staff-assign" id="staff-${deptIndex}">Assigned to: <span id="assigned-staff-${deptIndex}">Not assigned</span></div>
+                <div class="staff-assign" id="staff-${deptIndex}">
+                    Assigned to: <span id="assigned-staff-${deptIndex}">Not assigned</span>
+                </div>
             `;
             card.appendChild(header);
 
@@ -352,11 +488,22 @@
                 const taskId = `task-${deptIndex}-${taskIndex}`;
                 const taskDiv = createTaskItem(task, deptIndex, taskIndex, taskId);
                 tasksDiv.appendChild(taskDiv);
+                
+                // Initialize timer data
+                timers[taskId] = {
+                    startTime: null,
+                    endTime: null,
+                    elapsedSeconds: 0,
+                    isRunning: false,
+                    interval: null
+                };
+                
+                timeRecords[taskId] = [];
             });
             
             card.appendChild(tasksDiv);
 
-            // Submit button for department
+            // Submit button
             const submitDiv = document.createElement('div');
             submitDiv.className = 'department-submit';
             submitDiv.innerHTML = `
@@ -375,50 +522,26 @@
             taskDiv.className = 'task-item';
             taskDiv.id = taskId;
 
-            // Initialize timer data for this task
-            if (!timers[taskId]) {
-                timers[taskId] = {
-                    startTime: null,
-                    endTime: null,
-                    elapsedSeconds: 0,
-                    isRunning: false,
-                    interval: null
-                };
-            }
-
-            if (!timeRecords[taskId]) {
-                timeRecords[taskId] = [];
-            }
-
-            // Task header
-            const headerDiv = document.createElement('div');
-            headerDiv.className = 'task-header';
-            headerDiv.innerHTML = `
-                <span class="task-name">${task}</span>
-                <span class="timer-display" id="${taskId}-timer">00:00:00</span>
+            taskDiv.innerHTML = `
+                <div class="task-header">
+                    <span class="task-name">${task}</span>
+                    <span class="timer-display" id="${taskId}-timer">00:00:00</span>
+                </div>
+                <div class="time-controls">
+                    <button class="btn-start" onclick="startTimer('${taskId}')" id="${taskId}-start">▶ Start</button>
+                    <button class="btn-stop" onclick="stopTimer('${taskId}')" id="${taskId}-stop" disabled>⏹ Stop</button>
+                </div>
+                <div class="time-records" id="${taskId}-records">
+                    <div class="time-record">No completed sessions yet</div>
+                </div>
             `;
-            taskDiv.appendChild(headerDiv);
-
-            // Control buttons
-            const controlsDiv = document.createElement('div');
-            controlsDiv.className = 'time-controls';
-            controlsDiv.innerHTML = `
-                <button class="btn-start" onclick="startTimer('${taskId}')" id="${taskId}-start">▶ Start</button>
-                <button class="btn-stop" onclick="stopTimer('${taskId}')" id="${taskId}-stop" disabled>⏹ Stop</button>
-            `;
-            taskDiv.appendChild(controlsDiv);
-
-            // Records display
-            const recordsDiv = document.createElement('div');
-            recordsDiv.className = 'time-records';
-            recordsDiv.id = `${taskId}-records`;
-            recordsDiv.innerHTML = '<div class="time-record">No completed sessions yet</div>';
-            taskDiv.appendChild(recordsDiv);
 
             return taskDiv;
         }
 
-        // Timer functions
+        // ============================================
+        // TIMER FUNCTIONS
+        // ============================================
         function startTimer(taskId) {
             const staffName = document.getElementById('staffName').value;
             if (!staffName) {
@@ -437,9 +560,13 @@
             document.getElementById(`${taskId}-start`).disabled = true;
             document.getElementById(`${taskId}-stop`).disabled = false;
 
-            // Update assigned staff display
+            // Update assigned staff
             const deptIndex = taskId.split('-')[1];
             document.getElementById(`assigned-staff-${deptIndex}`).textContent = staffName;
+            
+            // Update statistics
+            inProgressCount++;
+            updateStatistics();
         }
 
         function stopTimer(taskId) {
@@ -452,18 +579,22 @@
 
             // Calculate elapsed time
             const elapsedMs = timer.endTime - timer.startTime;
-            const elapsedSeconds = Math.floor(elapsedMs / 1000);
-            timer.elapsedSeconds = elapsedSeconds;
+            timer.elapsedSeconds = Math.floor(elapsedMs / 1000);
 
-            // Record this session
+            // Record this session with ALL data
             recordTaskSession(taskId);
 
             // Update UI
             document.getElementById(`${taskId}-start`).disabled = false;
             document.getElementById(`${taskId}-stop`).disabled = true;
 
-            // Reset timer display to zero
+            // Reset timer display
             updateTimerDisplay(taskId, true);
+            
+            // Update statistics
+            inProgressCount--;
+            completedTasksCount++;
+            updateStatistics();
         }
 
         function updateTimerDisplay(taskId, reset = false) {
@@ -475,7 +606,7 @@
                 return;
             }
 
-            if (timer.isRunning) {
+            if (timer && timer.isRunning) {
                 const now = new Date();
                 const elapsedMs = now - timer.startTime;
                 const seconds = Math.floor(elapsedMs / 1000);
@@ -487,26 +618,73 @@
             }
         }
 
+        // ============================================
+        // RECORD KEEPING - Collects ALL form data
+        // ============================================
         function recordTaskSession(taskId) {
             const timer = timers[taskId];
             const staffName = document.getElementById('staffName').value;
             const employeeId = document.getElementById('employeeId').value;
+            const workDate = document.getElementById('workDate').value;
+            const shiftStart = document.getElementById('shiftStart').value;
+            const shiftEnd = document.getElementById('shiftEnd').value;
+            const workLocation = document.getElementById('workLocation').value;
+            const supervisor = document.getElementById('supervisor').value;
+            const globalNotes = document.getElementById('globalNotes').value;
             
+            // Get task details from taskId
+            const [_, deptIndex, taskIndex] = taskId.split('-');
+            const department = departments[parseInt(deptIndex)].name;
+            const taskName = departments[parseInt(deptIndex)].tasks[parseInt(taskIndex)];
+
+            // Create complete session record with ALL fields
             const session = {
-                staffName,
-                employeeId,
+                // Staff Info
+                staffName: staffName,
+                employeeId: employeeId,
+                
+                // Task Info
+                department: department,
+                taskName: taskName,
+                
+                // Timing
                 startTime: timer.startTime,
                 endTime: timer.endTime,
                 durationSeconds: timer.elapsedSeconds,
-                date: document.getElementById('workDate').value
+                durationMinutes: Math.round(timer.elapsedSeconds / 60),
+                durationHours: (timer.elapsedSeconds / 3600).toFixed(2),
+                
+                // Work Details
+                workDate: workDate,
+                shiftStart: shiftStart,
+                shiftEnd: shiftEnd,
+                workLocation: workLocation,
+                supervisor: supervisor,
+                
+                // Additional
+                notes: globalNotes,
+                taskNotes: '', // Can be added per task if needed
+                
+                // Metadata
+                submissionTimestamp: new Date().toISOString(),
+                taskId: taskId
             };
 
+            // Store the session
+            if (!timeRecords[taskId]) {
+                timeRecords[taskId] = [];
+            }
             timeRecords[taskId].push(session);
+            
+            // Update display
             updateRecordsDisplay(taskId);
+            
+            // Log for debugging
+            console.log('Session recorded:', session);
         }
 
         function updateRecordsDisplay(taskId) {
-            const records = timeRecords[taskId];
+            const records = timeRecords[taskId] || [];
             const recordsDiv = document.getElementById(`${taskId}-records`);
             
             if (records.length === 0) {
@@ -516,12 +694,10 @@
 
             let html = '';
             records.slice(-3).reverse().forEach(record => {
-                const minutes = Math.floor(record.durationSeconds / 60);
-                const seconds = record.durationSeconds % 60;
                 html += `
                     <div class="time-record">
                         <span>${record.staffName}</span>
-                        <span>${minutes}m ${seconds}s</span>
+                        <span>${record.durationMinutes}m</span>
                     </div>
                 `;
             });
@@ -529,22 +705,22 @@
             recordsDiv.innerHTML = html;
         }
 
-        // Submit tasks for a specific department
+        // ============================================
+        // SUBMISSION FUNCTIONS - Sends ALL data to Google Sheets
+        // ============================================
         async function submitDepartmentTasks(deptIndex) {
             const department = departments[deptIndex];
             const staffName = document.getElementById('staffName').value;
             const statusDiv = document.getElementById(`status-${deptIndex}`);
             
             if (!staffName) {
-                statusDiv.className = 'status-message error';
-                statusDiv.textContent = '❌ Please enter staff name';
-                statusDiv.style.display = 'block';
-                setTimeout(() => statusDiv.style.display = 'none', 3000);
+                showStatus(statusDiv, '❌ Please enter staff name', 'error');
                 return;
             }
 
-            // Collect all task data for this department
+            // Collect ALL task data for this department
             const taskData = [];
+            let totalTasks = 0;
             
             department.tasks.forEach((task, taskIndex) => {
                 const taskId = `task-${deptIndex}-${taskIndex}`;
@@ -552,83 +728,259 @@
                 
                 sessions.forEach(session => {
                     taskData.push({
-                        department: department.name,
-                        task: task,
+                        // Staff Information
                         staffName: session.staffName,
                         employeeId: session.employeeId,
-                        startTime: session.startTime.toISOString(),
-                        endTime: session.endTime.toISOString(),
+                        
+                        // Department & Task
+                        department: session.department,
+                        taskName: session.taskName,
+                        
+                        // Timing Data
+                        startTime: session.startTime,
+                        endTime: session.endTime,
                         durationSeconds: session.durationSeconds,
-                        durationMinutes: Math.round(session.durationSeconds / 60),
-                        date: session.date,
-                        submissionTimestamp: new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })
+                        durationMinutes: session.durationMinutes,
+                        durationHours: session.durationHours,
+                        
+                        // Work Details
+                        workDate: session.workDate,
+                        shiftStart: session.shiftStart,
+                        shiftEnd: session.shiftEnd,
+                        workLocation: session.workLocation,
+                        supervisor: session.supervisor,
+                        
+                        // Notes
+                        notes: session.notes,
+                        taskNotes: session.taskNotes,
+                        
+                        // Metadata
+                        submittedBy: staffName,
+                        submissionTime: new Date().toISOString()
                     });
+                    totalTasks++;
                 });
             });
 
             if (taskData.length === 0) {
-                statusDiv.className = 'status-message error';
-                statusDiv.textContent = '❌ No completed tasks to submit';
-                statusDiv.style.display = 'block';
-                setTimeout(() => statusDiv.style.display = 'none', 3000);
+                showStatus(statusDiv, '❌ No completed tasks to submit', 'error');
                 return;
             }
 
-            // Submit data
+            // Submit to Google Sheets
+            await submitToGoogleSheets({
+                type: 'department_submission',
+                department: department.name,
+                tasks: taskData,
+                submittedBy: staffName,
+                totalTasks: totalTasks,
+                timestamp: new Date().toISOString(),
+                
+                // Include global form data
+                globalData: {
+                    staffName: staffName,
+                    employeeId: document.getElementById('employeeId').value,
+                    workDate: document.getElementById('workDate').value,
+                    shiftStart: document.getElementById('shiftStart').value,
+                    shiftEnd: document.getElementById('shiftEnd').value,
+                    workLocation: document.getElementById('workLocation').value,
+                    supervisor: document.getElementById('supervisor').value,
+                    globalNotes: document.getElementById('globalNotes').value
+                }
+            }, statusDiv, deptIndex);
+        }
+
+        async function submitAllDepartments() {
+            const globalStatus = document.getElementById('globalStatus');
+            const staffName = document.getElementById('staffName').value;
+            
+            if (!staffName) {
+                showStatus(globalStatus, '❌ Please enter staff name', 'error');
+                return;
+            }
+
+            let allTasks = [];
+            let totalCount = 0;
+
+            // Collect data from all departments
+            departments.forEach((dept, deptIndex) => {
+                dept.tasks.forEach((task, taskIndex) => {
+                    const taskId = `task-${deptIndex}-${taskIndex}`;
+                    const sessions = timeRecords[taskId] || [];
+                    
+                    sessions.forEach(session => {
+                        allTasks.push(session);
+                        totalCount++;
+                    });
+                });
+            });
+
+            if (allTasks.length === 0) {
+                showStatus(globalStatus, '❌ No completed tasks to submit', 'error');
+                return;
+            }
+
+            // Submit all at once
+            await submitToGoogleSheets({
+                type: 'bulk_submission',
+                tasks: allTasks,
+                submittedBy: staffName,
+                totalTasks: totalCount,
+                timestamp: new Date().toISOString(),
+                globalData: {
+                    staffName: staffName,
+                    employeeId: document.getElementById('employeeId').value,
+                    workDate: document.getElementById('workDate').value,
+                    shiftStart: document.getElementById('shiftStart').value,
+                    shiftEnd: document.getElementById('shiftEnd').value,
+                    workLocation: document.getElementById('workLocation').value,
+                    supervisor: document.getElementById('supervisor').value,
+                    globalNotes: document.getElementById('globalNotes').value
+                }
+            }, globalStatus);
+        }
+
+        async function submitToGoogleSheets(data, statusDiv, deptIndex = null) {
             try {
-                statusDiv.className = 'status-message';
-                statusDiv.textContent = 'Submitting...';
-                statusDiv.style.display = 'block';
+                showStatus(statusDiv, 'Submitting...', 'info');
+                
+                console.log('Submitting data to Google Sheets:', data);
 
                 const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        department: department.name,
-                        tasks: taskData,
-                        submittedBy: staffName,
-                        timestamp: new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })
-                    })
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
                 });
 
-                statusDiv.className = 'status-message success';
-                statusDiv.textContent = `✅ ${taskData.length} tasks submitted successfully!`;
+                // Since we're using no-cors, we assume success
+                showStatus(statusDiv, `✅ ${data.totalTasks || data.tasks.length} tasks submitted successfully!`, 'success');
                 
-                // Clear submitted sessions
-                department.tasks.forEach((task, taskIndex) => {
-                    const taskId = `task-${deptIndex}-${taskIndex}`;
-                    timeRecords[taskId] = [];
-                    updateRecordsDisplay(taskId);
-                });
-
-                setTimeout(() => statusDiv.style.display = 'none', 5000);
+                // Clear submitted sessions if it was a department submission
+                if (deptIndex !== null) {
+                    clearDepartmentSessions(deptIndex);
+                }
+                
+                // Update statistics
+                updateStatistics();
 
             } catch (error) {
-                statusDiv.className = 'status-message error';
-                statusDiv.textContent = '❌ Submission failed';
                 console.error('Submission error:', error);
-                setTimeout(() => statusDiv.style.display = 'none', 3000);
+                showStatus(statusDiv, '❌ Submission failed: ' + error.message, 'error');
             }
         }
 
-        // Update global timestamp
-        function updateGlobalTimestamp() {
-            const now = new Date();
-            const timestamp = document.getElementById('globalTimestamp');
-            timestamp.textContent = `Last updated: ${now.toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })}`;
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function showStatus(element, message, type) {
+            element.className = 'status-message ' + type;
+            element.textContent = message;
+            element.style.display = 'block';
+            
+            if (type !== 'info') {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
+            }
         }
 
-        // Initialize on page load
-        window.onload = function() {
-            initializeDepartments();
-            updateGlobalTimestamp();
-            setInterval(updateGlobalTimestamp, 1000);
+        function clearDepartmentSessions(deptIndex) {
+            const department = departments[deptIndex];
+            department.tasks.forEach((task, taskIndex) => {
+                const taskId = `task-${deptIndex}-${taskIndex}`;
+                timeRecords[taskId] = [];
+                updateRecordsDisplay(taskId);
+            });
+        }
 
-            // Set default date
-            const today = new Date();
-            document.getElementById('workDate').value = today.toISOString().split('T')[0];
-        };
+        function resetAllTimers() {
+            if (confirm('Are you sure you want to reset all timers and clear all records?')) {
+                // Reset all timers
+                Object.keys(timers).forEach(taskId => {
+                    const timer = timers[taskId];
+                    if (timer.interval) {
+                        clearInterval(timer.interval);
+                    }
+                    timer.isRunning = false;
+                    timer.startTime = null;
+                    timer.endTime = null;
+                    timer.elapsedSeconds = 0;
+                    
+                    // Reset UI
+                    document.getElementById(`${taskId}-start`).disabled = false;
+                    document.getElementById(`${taskId}-stop`).disabled = true;
+                    document.getElementById(`${taskId}-timer`).textContent = '00:00:00';
+                });
+                
+                // Clear all records
+                Object.keys(timeRecords).forEach(taskId => {
+                    timeRecords[taskId] = [];
+                    updateRecordsDisplay(taskId);
+                });
+                
+                // Reset counts
+                completedTasksCount = 0;
+                inProgressCount = 0;
+                updateStatistics();
+                
+                showStatus(document.getElementById('globalStatus'), '✅ All timers reset', 'success');
+            }
+        }
+
+        function exportAllData() {
+            const data = {
+                staffInfo: {
+                    staffName: document.getElementById('staffName').value,
+                    employeeId: document.getElementById('employeeId').value,
+                    workDate: document.getElementById('workDate').value,
+                    shiftStart: document.getElementById('shiftStart').value,
+                    shiftEnd: document.getElementById('shiftEnd').value,
+                    workLocation: document.getElementById('workLocation').value,
+                    supervisor: document.getElementById('supervisor').value,
+                    globalNotes: document.getElementById('globalNotes').value
+                },
+                taskRecords: timeRecords,
+                exportTime: new Date().toISOString()
+            };
+            
+            const jsonStr = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cleaning-data-${new Date().toISOString()}.json`;
+            a.click();
+            
+            showStatus(document.getElementById('globalStatus'), '✅ Data exported successfully', 'success');
+        }
+
+        function updateStatistics() {
+            document.getElementById('completedTasks').textContent = completedTasksCount;
+            document.getElementById('inProgressTasks').textContent = inProgressCount;
+            
+            const staffName = document.getElementById('staffName').value;
+            document.getElementById('staffOnDuty').textContent = staffName ? '1' : '0';
+            
+            // Calculate total tasks (5 departments * 8 tasks)
+            document.getElementById('totalTasks').textContent = departments.length * 8;
+        }
+
+        function updateGlobalTimestamp() {
+            const now = new Date();
+            document.getElementById('globalTimestamp').textContent = 
+                `Last updated: ${now.toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })}`;
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        document.getElementById('staffName').addEventListener('input', updateStatistics);
+
+        // Initialize on page load
+        window.onload = initializeApp;
     </script>
 </body>
 </html>
