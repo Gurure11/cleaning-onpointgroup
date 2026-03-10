@@ -543,7 +543,7 @@
             </div>
 
             <form id="taskForm">
-                <!-- Basic Info -->
+                <!-- Basic Info with NEW fields -->
                 <div class="form-grid">
                     <div class="field">
                         <label><i class="fas fa-user"></i> Assigned To *</label>
@@ -554,15 +554,53 @@
                         <input type="date" id="taskDate" required>
                     </div>
                     <div class="field">
-                        <label><i class="fas fa-map-pin"></i> Location</label>
-                        <input type="text" id="location" placeholder="e.g. North Garden">
+                        <label><i class="fas fa-building"></i> Cost Center *</label>
+                        <select id="costCenter" required>
+                            <option value="">Select Cost Center...</option>
+                            <option value="Onpoint Group HQ">Onpoint Group HQ</option>
+                            <option value="DI Solutions">DI Solutions</option>
+                            <option value="Aqua Telecoms">Aqua Telecoms</option>
+                            <option value="Nkanyezi Projects">Nkanyezi Projects</option>
+                            <option value="Onpoint Ontime Solutions">Onpoint Ontime Solutions</option>
+                        </select>
                     </div>
                     <div class="field">
-                        <label><i class="fas fa-clock"></i> Shift</label>
-                        <select id="shift">
-                            <option value="Morning">Morning (06:00-14:00)</option>
-                            <option value="Afternoon">Afternoon (14:00-22:00)</option>
-                            <option value="Night">Night (22:00-06:00)</option>
+                        <label><i class="fas fa-users"></i> Department *</label>
+                        <select id="department" required>
+                            <option value="">Select Department...</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Business Development">Business Development</option>
+                            <option value="Finance and IT">Finance and IT</option>
+                            <option value="Fleet Management">Fleet Management</option>
+                            <option value="HR">HR</option>
+                            <option value="Operations">Operations</option>
+                            <option value="Procurement">Procurement</option>
+                            <option value="Sales">Sales</option>
+                            <option value="SHEQ">SHEQ</option>
+                            <option value="Tendering">Tendering</option>
+                            <option value="Warehouse">Warehouse</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Shift (simplified Day/Night) -->
+                <div class="form-grid" style="margin-top: 0;">
+                    <div class="field">
+                        <label><i class="fas fa-clock"></i> Shift *</label>
+                        <select id="shift" required>
+                            <option value="">Select Shift...</option>
+                            <option value="Day">Day</option>
+                            <option value="Night">Night</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label><i class="fas fa-tag"></i> Equipment</label>
+                        <select id="equipment">
+                            <option value="None">None</option>
+                            <option value="Lawnmower">Lawnmower</option>
+                            <option value="Painting Kit">Painting Kit</option>
+                            <option value="Tool Kit">Tool Kit</option>
+                            <option value="Feeding Equipment">Feeding Equipment</option>
                         </select>
                     </div>
                 </div>
@@ -613,7 +651,7 @@
                 </div>
                 <input type="hidden" id="priority" value="Medium">
 
-                <!-- Time & Staff -->
+                <!-- Time & Staff (keep time fields) -->
                 <div class="time-grid">
                     <div class="field">
                         <label><i class="fas fa-hourglass-start"></i> Start Time</label>
@@ -629,16 +667,6 @@
                     <div class="field">
                         <label><i class="fas fa-users"></i> Team Size</label>
                         <input type="number" id="teamSize" min="1" value="1">
-                    </div>
-                    <div class="field">
-                        <label><i class="fas fa-tag"></i> Equipment</label>
-                        <select id="equipment">
-                            <option value="None">None</option>
-                            <option value="Lawnmower">Lawnmower</option>
-                            <option value="Painting Kit">Painting Kit</option>
-                            <option value="Tool Kit">Tool Kit</option>
-                            <option value="Feeding Equipment">Feeding Equipment</option>
-                        </select>
                     </div>
                 </div>
 
@@ -665,7 +693,7 @@
                 </div>
 
                 <!-- Hidden Fields -->
-                <input type="hidden" id="sheetId" value="1al8guXtgk-PJWwdNvd2umUXYv4AvwXSM">
+                <input type="hidden" id="sheetId" value="1Wvuq8Ys-F4sl4NitRHmoaSVMnLPw7RzWr7JvbM4xP6s">
                 <input type="hidden" id="sheetName" value="Field Maintenance">
 
                 <!-- Action Buttons -->
@@ -689,6 +717,14 @@
             <div class="summary-item">
                 <span><i class="fas fa-user-check"></i> Current Assignee:</span>
                 <span id="summaryAssignee">-</span>
+            </div>
+            <div class="summary-item">
+                <span><i class="fas fa-building"></i> Cost Center:</span>
+                <span id="summaryCostCenter">-</span>
+            </div>
+            <div class="summary-item">
+                <span><i class="fas fa-users"></i> Department:</span>
+                <span id="summaryDepartment">-</span>
             </div>
             <div class="summary-item">
                 <span><i class="fas fa-list-check"></i> Tasks:</span>
@@ -720,11 +756,15 @@
             const teamSize = document.getElementById('teamSize');
             const teamCountSpan = document.getElementById('teamCount');
             const assignedTo = document.getElementById('assignedTo');
+            const costCenter = document.getElementById('costCenter');
+            const department = document.getElementById('department');
             const priorityOptions = document.querySelectorAll('.priority-option');
             const priorityInput = document.getElementById('priority');
             
             // Summary elements
             const summaryAssignee = document.getElementById('summaryAssignee');
+            const summaryCostCenter = document.getElementById('summaryCostCenter');
+            const summaryDepartment = document.getElementById('summaryDepartment');
             const summaryTasks = document.getElementById('summaryTasks');
             const summaryDuration = document.getElementById('summaryDuration');
             const summaryPriority = document.getElementById('summaryPriority');
@@ -773,6 +813,18 @@
                 summaryAssignee.innerText = assignedTo.value || '-';
             }
 
+            // Update cost center summary
+            function updateCostCenter() {
+                const selected = costCenter.options[costCenter.selectedIndex];
+                summaryCostCenter.innerText = selected ? selected.text : '-';
+            }
+
+            // Update department summary
+            function updateDepartment() {
+                const selected = department.options[department.selectedIndex];
+                summaryDepartment.innerText = selected ? selected.text : '-';
+            }
+
             // Priority selection
             priorityOptions.forEach(opt => {
                 opt.addEventListener('click', function() {
@@ -793,12 +845,16 @@
             endTime.addEventListener('change', calculateHours);
             teamSize.addEventListener('input', updateTeamCount);
             assignedTo.addEventListener('input', updateAssignee);
+            costCenter.addEventListener('change', updateCostCenter);
+            department.addEventListener('change', updateDepartment);
 
             // Initial calculations
             updateTaskCount();
             calculateHours();
             updateTeamCount();
             updateAssignee();
+            updateCostCenter();
+            updateDepartment();
 
             // Reset button
             document.getElementById('resetBtn').addEventListener('click', function() {
@@ -815,6 +871,8 @@
                 calculateHours();
                 updateTeamCount();
                 updateAssignee();
+                updateCostCenter();
+                updateDepartment();
                 summaryPriority.innerText = 'Medium';
             });
 
@@ -825,10 +883,28 @@
                 // Validation
                 const assigned = document.getElementById('assignedTo').value;
                 const date = document.getElementById('taskDate').value;
+                const costCenterVal = document.getElementById('costCenter').value;
+                const departmentVal = document.getElementById('department').value;
+                const shiftVal = document.getElementById('shift').value;
                 const selectedTasks = Array.from(checkboxes).filter(cb => cb.checked);
 
                 if (!assigned || !date) {
-                    showMessage('Please fill in required fields', 'error');
+                    showMessage('Please fill in Assigned To and Date', 'error');
+                    return;
+                }
+
+                if (!costCenterVal) {
+                    showMessage('Please select a Cost Center', 'error');
+                    return;
+                }
+
+                if (!departmentVal) {
+                    showMessage('Please select a Department', 'error');
+                    return;
+                }
+
+                if (!shiftVal) {
+                    showMessage('Please select a Shift', 'error');
                     return;
                 }
 
@@ -842,8 +918,6 @@
                 const priority = priorityInput.value;
                 const start = startTime.value;
                 const end = endTime.value;
-                const location = document.getElementById('location').value || 'Not specified';
-                const shift = document.getElementById('shift').value;
                 const team = teamSize.value;
                 const equipment = document.getElementById('equipment').value;
                 const notes = document.getElementById('notes').value;
@@ -862,10 +936,11 @@
                     timestamp: new Date().toISOString(),
                     date: date,
                     assignedTo: assigned,
-                    location: location,
+                    costCenter: costCenterVal,
+                    department: departmentVal,
+                    shift: shiftVal,
                     tasks: tasks,
                     priority: priority,
-                    shift: shift,
                     startTime: start,
                     endTime: end,
                     totalHours: hours.toFixed(1),
@@ -873,8 +948,7 @@
                     equipment: equipment,
                     notes: notes,
                     submissionId: submissionId,
-                    status: 'Pending',
-                    department: 'Field & Cleaning'
+                    status: 'Pending'
                 };
 
                 // Google Apps Script URL - Replace with your deployed URL
