@@ -543,11 +543,15 @@
             </div>
 
             <form id="taskForm">
-                <!-- Basic Info with NEW fields -->
+                <!-- Basic Info with UPDATED Assigned To options -->
                 <div class="form-grid">
                     <div class="field">
                         <label><i class="fas fa-user"></i> Assigned To *</label>
-                        <input type="text" id="assignedTo" placeholder="e.g. John Fields" required>
+                        <select id="assignedTo" required>
+                            <option value="">Select staff member...</option>
+                            <option value="Gravies Maseko">Gravies Maseko</option>
+                            <option value="Ishmael Khumbula">Ishmael Khumbula</option>
+                        </select>
                     </div>
                     <div class="field">
                         <label><i class="fas fa-calendar"></i> Date *</label>
@@ -810,7 +814,8 @@
 
             // Update assignee summary
             function updateAssignee() {
-                summaryAssignee.innerText = assignedTo.value || '-';
+                const selected = assignedTo.options[assignedTo.selectedIndex];
+                summaryAssignee.innerText = selected ? selected.text : '-';
             }
 
             // Update cost center summary
@@ -844,7 +849,7 @@
             startTime.addEventListener('change', calculateHours);
             endTime.addEventListener('change', calculateHours);
             teamSize.addEventListener('input', updateTeamCount);
-            assignedTo.addEventListener('input', updateAssignee);
+            assignedTo.addEventListener('change', updateAssignee);
             costCenter.addEventListener('change', updateCostCenter);
             department.addEventListener('change', updateDepartment);
 
