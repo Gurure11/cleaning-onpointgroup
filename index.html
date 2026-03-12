@@ -413,11 +413,21 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label>👤 Staff Name *</label>
-                    <input type="text" id="staffName" placeholder="Enter your full name" required>
+                    <select id="staffName" required>
+                        <option value="">Select staff member...</option>
+                        <option value="Francisca Tsotetsi">Francisca Tsotetsi</option>
+                        <option value="Selly Nxele">Selly Nxele</option>
+                        <option value="Lerato M. Mashini">Lerato M. Mashini</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>📋 Employee ID *</label>
-                    <input type="text" id="employeeId" placeholder="Enter employee ID" required>
+                    <select id="employeeId" required>
+                        <option value="">Select employee ID...</option>
+                        <option value="SUB007">SUB007</option>
+                        <option value="CAS021">CAS021</option>
+                        <option value="DIS026">DIS026</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label>📅 Work Date</label>
@@ -618,7 +628,7 @@
         function startTimer(taskId) {
             const staffName = document.getElementById('staffName').value;
             if (!staffName) {
-                alert('Please enter staff name first');
+                alert('Please select a staff name first');
                 return;
             }
 
@@ -784,7 +794,7 @@
             const statusDiv = document.getElementById(`status-${deptIndex}`);
             
             if (!staffName) {
-                showStatus(statusDiv, '❌ Please enter staff name', 'error');
+                showStatus(statusDiv, '❌ Please select a staff name', 'error');
                 return;
             }
 
@@ -865,7 +875,7 @@
             const staffName = document.getElementById('staffName').value;
             
             if (!staffName) {
-                showStatus(globalStatus, '❌ Please enter staff name', 'error');
+                showStatus(globalStatus, '❌ Please select a staff name', 'error');
                 return;
             }
 
@@ -1046,7 +1056,7 @@
         // ============================================
         // EVENT LISTENERS
         // ============================================
-        document.getElementById('staffName').addEventListener('input', updateStatistics);
+        document.getElementById('staffName').addEventListener('change', updateStatistics);
 
         // Initialize on page load
         window.onload = initializeApp;
