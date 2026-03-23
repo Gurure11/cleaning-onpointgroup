@@ -523,8 +523,8 @@
     <div class="container">
         <!-- Navigation -->
         <div class="nav-bar">
-            <a href="index.html" class="home-btn">
-                <i class="fas fa-home"></i> Home
+            <a href="#" class="home-btn" onclick="window.location.reload(); return false;">
+                <i class="fas fa-home"></i> Task Manager
             </a>
             <div class="badge">
                 <i class="fas fa-leaf"></i> Onpoint Field & Cleaning
@@ -543,7 +543,7 @@
             </div>
 
             <form id="taskForm">
-                <!-- Basic Info with UPDATED Assigned To options -->
+                <!-- Basic Info -->
                 <div class="form-grid">
                     <div class="field">
                         <label><i class="fas fa-user"></i> Assigned To *</label>
@@ -587,7 +587,7 @@
                     </div>
                 </div>
 
-                <!-- Shift (simplified Day/Night) -->
+                <!-- Shift -->
                 <div class="form-grid" style="margin-top: 0;">
                     <div class="field">
                         <label><i class="fas fa-clock"></i> Shift *</label>
@@ -655,7 +655,7 @@
                 </div>
                 <input type="hidden" id="priority" value="Medium">
 
-                <!-- Time & Staff (keep time fields) -->
+                <!-- Time & Staff -->
                 <div class="time-grid">
                     <div class="field">
                         <label><i class="fas fa-hourglass-start"></i> Start Time</label>
@@ -695,10 +695,6 @@
                         <div class="total-value" id="teamCount">1</div>
                     </div>
                 </div>
-
-                <!-- Hidden Fields -->
-                <input type="hidden" id="sheetId" value="1Wvuq8Ys-F4sl4NitRHmoaSVMnLPw7RzWr7JvbM4xP6s">
-                <input type="hidden" id="sheetName" value="Field Maintenance">
 
                 <!-- Action Buttons -->
                 <div class="action-bar">
@@ -751,6 +747,12 @@
 
     <script>
         (function() {
+            // ============================================================
+            // CONFIGURATION - Google Apps Script Web App URL
+            // AFTER DEPLOYING THE APPS SCRIPT, REPLACE THIS URL WITH YOUR DEPLOYED URL
+            // ============================================================
+            const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxaST7Fq5UnhOlK5iOurVsXMcbpQ5bA8i3CnPLz-r2ceymtnHVxV0C-KyLxlq37Vh6eIg/exec';
+            
             // DOM Elements
             const checkboxes = document.querySelectorAll('input[name="tasks"]');
             const taskCountSpan = document.getElementById('taskCount');
@@ -781,7 +783,6 @@
                 const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
                 taskCountSpan.innerText = checked;
                 
-                // Update tasks summary
                 const selectedTasks = Array.from(checkboxes)
                     .filter(cb => cb.checked)
                     .map(cb => cb.value)
@@ -799,7 +800,7 @@
                     const endHour = parseInt(end[0]) + parseInt(end[1]) / 60;
                     let hours = endHour - startHour;
                     
-                    if (hours < 0) hours += 24; // Handle overnight shifts
+                    if (hours < 0) hours += 24;
                     
                     totalHoursSpan.innerText = hours.toFixed(1);
                     summaryDuration.innerText = hours.toFixed(1) + ' hours';
@@ -815,19 +816,19 @@
             // Update assignee summary
             function updateAssignee() {
                 const selected = assignedTo.options[assignedTo.selectedIndex];
-                summaryAssignee.innerText = selected ? selected.text : '-';
+                summaryAssignee.innerText = selected && selected.value ? selected.text : '-';
             }
 
             // Update cost center summary
             function updateCostCenter() {
                 const selected = costCenter.options[costCenter.selectedIndex];
-                summaryCostCenter.innerText = selected ? selected.text : '-';
+                summaryCostCenter.innerText = selected && selected.value ? selected.text : '-';
             }
 
             // Update department summary
             function updateDepartment() {
                 const selected = department.options[department.selectedIndex];
-                summaryDepartment.innerText = selected ? selected.text : '-';
+                summaryDepartment.innerText = selected && selected.value ? selected.text : '-';
             }
 
             // Priority selection
@@ -841,7 +842,7 @@
                 });
             });
 
-            // Set default priority (Medium selected)
+            // Set default priority
             document.querySelector('.priority-option[data-priority="Medium"]').classList.add('selected');
 
             // Event listeners
@@ -872,6 +873,12 @@
                 document.querySelector('.priority-option[data-priority="Medium"]').classList.add('selected');
                 priorityInput.value = 'Medium';
                 
+                // Uncheck all checkboxes
+                checkboxes.forEach(cb => {
+                    cb.checked = false;
+                    cb.closest('.task-item').classList.remove('selected');
+                });
+                
                 updateTaskCount();
                 calculateHours();
                 updateTeamCount();
@@ -879,6 +886,18 @@
                 updateCostCenter();
                 updateDepartment();
                 summaryPriority.innerText = 'Medium';
+            });
+
+            // Task item styling on checkbox change
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    const parent = this.closest('.task-item');
+                    if (this.checked) {
+                        parent.classList.add('selected');
+                    } else {
+                        parent.classList.remove('selected');
+                    }
+                });
             });
 
             // Form submission
@@ -956,13 +975,10 @@
                     status: 'Pending'
                 };
 
-                // Google Apps Script URL - Replace with your deployed URL
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbyxbjHDSch0MW6u79VF2D7uylRjpaN5kEuyKd0F9m4dwQpv9zcL7imjErmrYWdmKy4v/exec';
-
                 showMessage('<i class="fas fa-spinner fa-pulse"></i> Submitting task...', 'info');
 
                 try {
-                    const response = await fetch(scriptURL, {
+                    const response = await fetch(APPS_SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
                         headers: { 'Content-Type': 'application/json' },
@@ -972,11 +988,15 @@
                     showMessage('✅ Task submitted successfully!', 'success');
                     
                     // Optional: Reset form after successful submission
-                    // document.getElementById('resetBtn').click();
+                    setTimeout(() => {
+                        if (confirm('Task submitted! Would you like to clear the form for a new task?')) {
+                            document.getElementById('resetBtn').click();
+                        }
+                    }, 500);
 
                 } catch (error) {
                     console.error('Submission error:', error);
-                    showMessage('❌ Submission failed. Please try again.', 'error');
+                    showMessage('❌ Submission failed. Please check your internet connection and try again.', 'error');
                 }
             });
 
@@ -998,23 +1018,13 @@
 
                 if (type !== 'info') {
                     setTimeout(() => {
-                        responseDiv.innerHTML = '';
-                        responseDiv.style.backgroundColor = 'transparent';
+                        if (responseDiv.innerHTML === message) {
+                            responseDiv.innerHTML = '';
+                            responseDiv.style.backgroundColor = 'transparent';
+                        }
                     }, 5000);
                 }
             }
-
-            // Task item styling on checkbox change
-            checkboxes.forEach(cb => {
-                cb.addEventListener('change', function() {
-                    const parent = this.closest('.task-item');
-                    if (this.checked) {
-                        parent.classList.add('selected');
-                    } else {
-                        parent.classList.remove('selected');
-                    }
-                });
-            });
         })();
     </script>
 </body>
