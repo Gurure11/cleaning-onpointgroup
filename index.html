@@ -5,28 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Onpoint Cleaning - Complete Task Timer System</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             min-height: 100vh;
             padding: 20px;
         }
-
         .container {
-            max-width: 1400px;
+            max-width: 1450px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
-
         .header {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
@@ -34,342 +27,135 @@
             text-align: center;
             position: relative;
         }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        /* New Field Cleaners Button - Positioned in Header */
-        .field-btn-container {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-        }
-
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .field-btn-container { position: absolute; top: 20px; right: 30px; }
         .btn-field {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: #4CAF50;
-            color: white;
-            padding: 12px 25px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1em;
-            border: 2px solid rgba(255,255,255,0.3);
-            transition: all 0.3s ease;
+            display: inline-flex; align-items: center; gap: 10px; background: #4CAF50; color: white;
+            padding: 12px 25px; border-radius: 50px; text-decoration: none; font-weight: 600;
+            font-size: 1em; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-
-        .btn-field i {
-            font-size: 1.2em;
-        }
-
+        .btn-field i { font-size: 1.2em; }
         .btn-field:hover {
-            background: #45a049;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            border-color: rgba(255,255,255,0.5);
+            background: #45a049; transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.5);
         }
-
-        .btn-field:active {
-            transform: translateY(-1px);
-        }
-
-        /* Responsive button positioning */
-        @media (max-width: 768px) {
-            .header {
-                padding-top: 80px;
-            }
-            
-            .field-btn-container {
-                top: 15px;
-                right: 20px;
-                left: 20px;
-                text-align: center;
-            }
-            
-            .btn-field {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-        }
-
+        .btn-field:active { transform: translateY(-1px); }
         .stats-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-bottom: 2px solid #e9ecef;
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 15px; padding: 20px;
+            background: #f8f9fa; border-bottom: 2px solid #e9ecef;
         }
-
         .stat-card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
+            background: white; padding: 15px; border-radius: 10px; text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        .stat-card .label {
-            font-size: 12px;
-            color: #666;
-            text-transform: uppercase;
+        .stat-card .label { font-size: 12px; color: #666; text-transform: uppercase; }
+        .stat-card .value { font-size: 24px; font-weight: bold; color: #1e3c72; margin-top: 5px; }
+        .section-block {
+            background: #f8f9fa; padding: 25px; border-bottom: 2px solid #e9ecef;
         }
-
-        .stat-card .value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #1e3c72;
-            margin-top: 5px;
+        .section-title {
+            font-size: 1.25rem; font-weight: 700; color: #1e3c72; margin-bottom: 18px;
+            display: flex; align-items: center; gap: 10px;
         }
-
-        .staff-info {
-            background: #f8f9fa;
-            padding: 25px;
-            border-bottom: 2px solid #e9ecef;
-        }
-
         .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;
         }
-
-        .form-group {
-            margin-bottom: 15px;
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #495057; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 16px;
+            font-family: inherit;
         }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #495057;
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: #1e3c72;
+        }
+        .inventory-toolbar, .summary-toolbar, .global-controls {
+            padding: 20px; background: #eef2f7; text-align: center; display: flex; gap: 15px;
+            justify-content: center; flex-wrap: wrap; border-bottom: 2px solid #e9ecef;
+        }
+        .btn-global, .btn-submit-department, .btn-add-row {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; border: none;
+            padding: 12px 25px; font-size: 1em; border-radius: 50px; cursor: pointer; transition: transform 0.3s;
             font-weight: 600;
         }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 16px;
+        .btn-add-row { background: linear-gradient(135deg, #0b7a75 0%, #159895 100%); }
+        .btn-start {
+            background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px;
+            cursor: pointer; font-weight: 600; flex: 1;
         }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #1e3c72;
+        .btn-stop {
+            background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px;
+            cursor: pointer; font-weight: 600; flex: 1;
         }
-
+        .btn-start:disabled, .btn-stop:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-global:hover, .btn-submit-department:hover, .btn-add-row:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(30,60,114,0.3); }
+        .inventory-table-wrap, .summary-table-wrap { padding: 0 25px 25px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.08); }
+        th {
+            background: #1e3c72; color: white; padding: 12px 10px; font-size: 0.92rem; text-align: left; white-space: nowrap;
+        }
+        td { padding: 10px; border-bottom: 1px solid #e9ecef; vertical-align: middle; }
+        td input, td select { width: 100%; padding: 8px; border: 1px solid #d8dee6; border-radius: 8px; }
+        .summary-chip {
+            display: inline-block; padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+            background: #e8f1ff; color: #1e3c72;
+        }
+        .balance-positive { color: #198754; font-weight: 700; }
+        .balance-warning { color: #dc3545; font-weight: 700; }
+        .summary-cards {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; padding: 0 25px 25px;
+        }
+        .summary-card {
+            background: white; border: 1px solid #e9ecef; border-radius: 14px; padding: 18px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+        }
+        .summary-card .small { color: #6c757d; font-size: 13px; text-transform: uppercase; }
+        .summary-card .big { color: #1e3c72; font-size: 24px; font-weight: 700; margin-top: 8px; }
         .departments-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            padding: 25px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; padding: 25px;
         }
-
         .department-card {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            overflow: hidden;
+            background: white; border: 2px solid #e9ecef; border-radius: 15px; overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
         .department-header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 15px;
-            text-align: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 15px; text-align: center;
         }
-
-        .department-header h3 {
-            font-size: 1.2em;
-            margin-bottom: 5px;
-        }
-
-        .department-header .staff-assign {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
-        .tasks-list {
-            padding: 20px;
-        }
-
+        .department-header h3 { font-size: 1.2em; margin-bottom: 5px; }
+        .department-header .staff-assign { font-size: 0.9em; opacity: 0.9; }
+        .tasks-list { padding: 20px; }
         .task-item {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 4px solid #1e3c72;
+            background: #f8f9fa; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 4px solid #1e3c72;
         }
-
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .task-name {
-            font-weight: 600;
-            color: #1e3c72;
-            font-size: 1.1em;
-        }
-
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; }
+        .task-name { font-weight: 600; color: #1e3c72; font-size: 1.05em; }
         .timer-display {
-            font-family: monospace;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #2a5298;
-            background: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: 1px solid #dee2e6;
+            font-family: monospace; font-size: 1.2em; font-weight: bold; color: #2a5298; background: white;
+            padding: 5px 10px; border-radius: 5px; border: 1px solid #dee2e6;
         }
-
-        .time-controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .btn-start {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            flex: 1;
-        }
-
-        .btn-stop {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            flex: 1;
-        }
-
-        .btn-start:disabled, .btn-stop:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .time-records {
-            font-size: 0.9em;
-            color: #6c757d;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .time-record {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-
-        .department-submit {
-            padding: 20px;
-            background: #f8f9fa;
-            border-top: 2px solid #e9ecef;
-            text-align: center;
-        }
-
-        .btn-submit-department {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 1.1em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            font-weight: 600;
-        }
-
-        .btn-submit-department:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
-        }
-
-        .global-controls {
-            padding: 20px;
-            background: #e9ecef;
-            text-align: center;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-global {
-            background: #1e3c72;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            font-size: 1em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            font-weight: 600;
-        }
-
-        .btn-global:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
-        }
-
-        .status-message {
-            margin: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            display: none;
-        }
-
-        .status-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            display: block;
-        }
-
-        .status-message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            display: block;
-        }
-
+        .time-controls { display: flex; gap: 10px; margin-bottom: 10px; }
+        .time-records { font-size: 0.9em; color: #6c757d; margin-top: 10px; padding-top: 10px; border-top: 1px solid #dee2e6; }
+        .time-record { display: flex; justify-content: space-between; margin-bottom: 5px; gap: 10px; }
+        .department-submit { padding: 20px; background: #f8f9fa; border-top: 2px solid #e9ecef; text-align: center; }
+        .status-message { margin: 20px; padding: 15px; border-radius: 8px; display: none; }
+        .status-message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; display: block; }
+        .status-message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; display: block; }
+        .status-message.info { background: #e7f1ff; color: #084298; border: 1px solid #b6d4fe; display: block; }
         .global-timestamp {
-            text-align: right;
-            padding: 10px 25px;
-            background: #f8f9fa;
-            color: #6c757d;
-            font-size: 0.9em;
-            border-top: 1px solid #e9ecef;
+            text-align: right; padding: 10px 25px; background: #f8f9fa; color: #6c757d; font-size: 0.9em; border-top: 1px solid #e9ecef;
         }
-
+        .muted-note { color: #6c757d; font-size: 0.92rem; padding: 0 25px 20px; }
+        .danger-text { color: #dc3545; font-weight: 700; }
+        @media (max-width: 1024px) { .stats-bar { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) {
-            .departments-grid {
-                grid-template-columns: 1fr;
-            }
-            .stats-bar {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .header { padding-top: 80px; }
+            .field-btn-container { top: 15px; right: 20px; left: 20px; text-align: center; }
+            .btn-field { width: 100%; justify-content: center; }
+            .header h1 { font-size: 2em; }
+            .departments-grid { grid-template-columns: 1fr; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .task-header, .time-record { flex-direction: column; align-items: flex-start; }
         }
     </style>
 </head>
@@ -377,9 +163,7 @@
     <div class="container">
         <div class="header">
             <h1>🧹 Onpoint Task Management System</h1>
-            <p>Real-time Task Tracking & Complete Data Collection</p>
-            
-            <!-- New Field Cleaners Button - Positioned at top right -->
+            <p>Real-time task tracking, inventory control and cleaner daily summaries</p>
             <div class="field-btn-container">
                 <a href="field.html" class="btn-field">
                     <i class="fas fa-leaf"></i> Field Cleaners
@@ -388,31 +172,20 @@
             </div>
         </div>
 
-        <!-- Statistics Bar -->
         <div class="stats-bar">
-            <div class="stat-card">
-                <div class="label">Total Tasks</div>
-                <div class="value" id="totalTasks">40</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Completed</div>
-                <div class="value" id="completedTasks">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">In Progress</div>
-                <div class="value" id="inProgressTasks">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Staff On Duty</div>
-                <div class="value" id="staffOnDuty">0</div>
-            </div>
+            <div class="stat-card"><div class="label">Total Tasks</div><div class="value" id="totalTasks">40</div></div>
+            <div class="stat-card"><div class="label">Completed</div><div class="value" id="completedTasks">0</div></div>
+            <div class="stat-card"><div class="label">In Progress</div><div class="value" id="inProgressTasks">0</div></div>
+            <div class="stat-card"><div class="label">Staff On Duty</div><div class="value" id="staffOnDuty">0</div></div>
+            <div class="stat-card"><div class="label">Inventory Lines</div><div class="value" id="inventoryLineCount">0</div></div>
+            <div class="stat-card"><div class="label">Daily Hours</div><div class="value" id="dailyHoursTotal">0.00</div></div>
         </div>
 
-        <!-- Staff Information Section - ALL data collected here -->
-        <div class="staff-info">
+        <div class="section-block">
+            <div class="section-title">👤 Staff Information</div>
             <div class="form-grid">
                 <div class="form-group">
-                    <label>👤 Staff Name *</label>
+                    <label>Staff Name *</label>
                     <select id="staffName" required>
                         <option value="">Select staff member...</option>
                         <option value="Francisca Tsotetsi">Francisca Tsotetsi</option>
@@ -421,7 +194,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>📋 Employee ID *</label>
+                    <label>Employee ID *</label>
                     <select id="employeeId" required>
                         <option value="">Select employee ID...</option>
                         <option value="SUB007">SUB007</option>
@@ -429,20 +202,11 @@
                         <option value="DIS026">DIS026</option>
                     </select>
                 </div>
+                <div class="form-group"><label>Work Date</label><input type="date" id="workDate"></div>
+                <div class="form-group"><label>Shift Start</label><input type="time" id="shiftStart"></div>
+                <div class="form-group"><label>Shift End</label><input type="time" id="shiftEnd"></div>
                 <div class="form-group">
-                    <label>📅 Work Date</label>
-                    <input type="date" id="workDate">
-                </div>
-                <div class="form-group">
-                    <label>⏰ Shift Start</label>
-                    <input type="time" id="shiftStart">
-                </div>
-                <div class="form-group">
-                    <label>⏰ Shift End</label>
-                    <input type="time" id="shiftEnd">
-                </div>
-                <div class="form-group">
-                    <label>📍 Work Location</label>
+                    <label>Work Location</label>
                     <select id="workLocation">
                         <option value="">Select location...</option>
                         <option value="Onpoint Group Head Office">Onpoint Group Head Office</option>
@@ -452,613 +216,605 @@
                         <option value="Onpoint Ontime Solutions">Onpoint Ontime Solutions</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>👔 Supervisor</label>
-                    <input type="text" id="supervisor" placeholder="Supervisor name">
-                </div>
-                <div class="form-group">
-                    <label>📝 Notes</label>
-                    <input type="text" id="globalNotes" placeholder="General notes">
-                </div>
+                <div class="form-group"><label>Supervisor</label><input type="text" id="supervisor" placeholder="Supervisor name"></div>
+                <div class="form-group"><label>Notes</label><input type="text" id="globalNotes" placeholder="General notes"></div>
             </div>
         </div>
 
-        <!-- Departments Container -->
+        <div class="section-block">
+            <div class="section-title">📦 Inventory Control</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Inventory Date</label>
+                    <input type="date" id="inventoryDate">
+                </div>
+                <div class="form-group">
+                    <label>Store / Area</label>
+                    <select id="inventoryLocation">
+                        <option value="Main Store">Main Store</option>
+                        <option value="Onpoint Group HQ">Onpoint Group HQ</option>
+                        <option value="DI Solutions">DI Solutions</option>
+                        <option value="Aqua Telecoms">Aqua Telecoms</option>
+                        <option value="Nkanyezi Projects">Nkanyezi Projects</option>
+                        <option value="Onpoint Ontime Solutions">Onpoint Ontime Solutions</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Stock Notes</label>
+                    <input type="text" id="inventoryNotes" placeholder="Delivery / issue notes">
+                </div>
+            </div>
+        </div>
+        <div class="inventory-toolbar">
+            <button class="btn-add-row" onclick="addInventoryRow()">➕ Add Inventory Line</button>
+            <button class="btn-global" onclick="submitInventory()">📤 Submit Inventory</button>
+        </div>
+        <div class="inventory-table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Item</th>
+                        <th>Unit</th>
+                        <th>Opening Stock</th>
+                        <th>Received</th>
+                        <th>Taken Out</th>
+                        <th>Balance</th>
+                        <th>Issued To / Area</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTableBody"></tbody>
+            </table>
+        </div>
+        <div id="inventoryStatus" class="status-message" style="margin: 0 25px 25px;"></div>
+        <div class="muted-note">Balances are calculated automatically as Opening Stock + Received - Taken Out.</div>
+
+        <div class="section-block">
+            <div class="section-title">📈 Daily Cleaner Summary</div>
+        </div>
+        <div class="summary-cards">
+            <div class="summary-card"><div class="small">Cleaner</div><div class="big" id="summaryCleaner">-</div></div>
+            <div class="summary-card"><div class="small">Work Date</div><div class="big" id="summaryDate">-</div></div>
+            <div class="summary-card"><div class="small">Areas Covered</div><div class="big" id="summaryAreas">0</div></div>
+            <div class="summary-card"><div class="small">Total Hours Worked</div><div class="big" id="summaryHours">0.00</div></div>
+        </div>
+        <div class="summary-toolbar">
+            <button class="btn-global" onclick="refreshDailySummary()">🔄 Refresh Summary</button>
+            <button class="btn-global" onclick="submitDailySummary()">📤 Submit Daily Summary</button>
+        </div>
+        <div class="summary-table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cleaner</th>
+                        <th>Area Cleaned</th>
+                        <th>Tasks Done</th>
+                        <th>Sessions</th>
+                        <th>Time Taken (Min)</th>
+                        <th>Total Hours</th>
+                        <th>First Start</th>
+                        <th>Last Finish</th>
+                    </tr>
+                </thead>
+                <tbody id="dailySummaryTableBody">
+                    <tr><td colspan="8">No task activity captured yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="summaryStatus" class="status-message" style="margin: 0 25px 25px;"></div>
+
         <div class="departments-grid" id="departmentsContainer"></div>
 
-        <!-- Global Control Buttons -->
         <div class="global-controls">
             <button class="btn-global" onclick="submitAllDepartments()">📤 SUBMIT ALL DEPARTMENTS</button>
             <button class="btn-global" onclick="exportAllData()">📊 EXPORT ALL DATA</button>
             <button class="btn-global" onclick="resetAllTimers()">🔄 RESET ALL</button>
         </div>
 
-        <!-- Status Message -->
         <div id="globalStatus" class="status-message"></div>
-
-        <!-- Timestamp -->
         <div class="global-timestamp" id="globalTimestamp"></div>
     </div>
 
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
     <script>
-        // ============================================
-        // CONFIGURATION - UPDATE WITH YOUR APPS SCRIPT URL
-        // ============================================
         const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbylhlR-IutZ9UbdJq2bNmIiEnUmAIs2vIvtvqP0EfSNE3BcCgKIZ9159jszeFbK8DhwBQ/exec';
 
-        // Department definitions with their specific tasks
         const departments = [
-            {
-                name: "Onpoint Group HQ",
-                tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"]
-            },
-            {
-                name: "DI Solutions",
-                tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"]
-            },
-            {
-                name: "Aqua Telecoms",
-                tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"]
-            },
-            {
-                name: "Nkanyezi Projects",
-                tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"]
-            },
-            {
-                name: "Onpoint Ontime Solutions",
-                tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"]
-            }
+            { name: "Onpoint Group HQ", tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"] },
+            { name: "DI Solutions", tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"] },
+            { name: "Aqua Telecoms", tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"] },
+            { name: "Nkanyezi Projects", tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"] },
+            { name: "Onpoint Ontime Solutions", tasks: ["Toilets Cleaning", "Kitchen Cleaning", "Office Cleaning", "Floor Mopping", "Window Cleaning", "Carpet Vacuuming", "Surface Dusting", "Waste Removal"] }
         ];
 
-        // Store active timers and records
+        const inventoryItemsByCategory = {
+            "Cleaning Materials": ["Detergent", "Dishwashing Liquid", "Bleach", "Hand Soap", "Disinfectant", "Toilet Paper", "Black Bags", "Mops", "Brooms", "Microfiber Cloths"],
+            "Tea & Refreshments": ["Sugar", "Coffee", "Milk", "Tea Bags", "Cups", "Bottled Water"],
+            "Other Supplies": ["Gloves", "Sanitizer", "Air Freshener", "Paper Towels", "Stationery"]
+        };
+        const inventoryUnits = ["Units", "Litres", "Kg", "Packs", "Boxes", "Bottles"];
+
         const timers = {};
         const timeRecords = {};
+        let inventoryRecords = [];
         let completedTasksCount = 0;
         let inProgressCount = 0;
 
-        // ============================================
-        // INITIALIZATION
-        // ============================================
         function initializeApp() {
             initializeDepartments();
+            initializeInventory();
             updateGlobalTimestamp();
             setInterval(updateGlobalTimestamp, 1000);
             setInterval(updateStatistics, 1000);
-
-            // Set default date
             const today = new Date();
-            document.getElementById('workDate').value = today.toISOString().split('T')[0];
-            
-            // Set default shift times
+            const isoDate = today.toISOString().split('T')[0];
+            document.getElementById('workDate').value = isoDate;
+            document.getElementById('inventoryDate').value = isoDate;
             document.getElementById('shiftStart').value = '08:00';
             document.getElementById('shiftEnd').value = '17:00';
+            refreshDailySummary();
         }
 
         function initializeDepartments() {
             const container = document.getElementById('departmentsContainer');
             container.innerHTML = '';
-
             departments.forEach((dept, deptIndex) => {
-                const deptCard = createDepartmentCard(dept, deptIndex);
-                container.appendChild(deptCard);
+                const card = document.createElement('div');
+                card.className = 'department-card';
+                card.id = `dept-${deptIndex}`;
+                card.innerHTML = `
+                    <div class="department-header">
+                        <h3>${dept.name}</h3>
+                        <div class="staff-assign" id="staff-${deptIndex}">Assigned to: <span id="assigned-staff-${deptIndex}">Not assigned</span></div>
+                    </div>
+                    <div class="tasks-list" id="tasks-${deptIndex}"></div>
+                    <div class="department-submit">
+                        <button class="btn-submit-department" onclick="submitDepartmentTasks(${deptIndex})">📤 Submit ${dept.name} Tasks</button>
+                        <div id="status-${deptIndex}" class="status-message"></div>
+                    </div>`;
+                container.appendChild(card);
+                const tasksDiv = document.getElementById(`tasks-${deptIndex}`);
+                dept.tasks.forEach((task, taskIndex) => {
+                    const taskId = `task-${deptIndex}-${taskIndex}`;
+                    timers[taskId] = { startTime: null, endTime: null, elapsedSeconds: 0, isRunning: false, interval: null };
+                    timeRecords[taskId] = [];
+                    const taskDiv = document.createElement('div');
+                    taskDiv.className = 'task-item';
+                    taskDiv.id = taskId;
+                    taskDiv.innerHTML = `
+                        <div class="task-header">
+                            <span class="task-name">${task}</span>
+                            <span class="timer-display" id="${taskId}-timer">00:00:00</span>
+                        </div>
+                        <div class="time-controls">
+                            <button class="btn-start" onclick="startTimer('${taskId}')" id="${taskId}-start">▶ Start</button>
+                            <button class="btn-stop" onclick="stopTimer('${taskId}')" id="${taskId}-stop" disabled>⏹ Stop</button>
+                        </div>
+                        <div class="time-records" id="${taskId}-records"><div class="time-record">No completed sessions yet</div></div>`;
+                    tasksDiv.appendChild(taskDiv);
+                });
             });
         }
 
-        function createDepartmentCard(department, deptIndex) {
-            const card = document.createElement('div');
-            card.className = 'department-card';
-            card.id = `dept-${deptIndex}`;
+        function initializeInventory() {
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = '';
+            addInventoryRow('Cleaning Materials', 'Detergent');
+            addInventoryRow('Cleaning Materials', 'Toilet Paper');
+            addInventoryRow('Tea & Refreshments', 'Sugar');
+            addInventoryRow('Tea & Refreshments', 'Coffee');
+            addInventoryRow('Tea & Refreshments', 'Milk');
+            syncInventoryRecordsFromTable();
+        }
 
-            // Header
-            const header = document.createElement('div');
-            header.className = 'department-header';
-            header.innerHTML = `
-                <h3>${department.name}</h3>
-                <div class="staff-assign" id="staff-${deptIndex}">
-                    Assigned to: <span id="assigned-staff-${deptIndex}">Not assigned</span>
-                </div>
-            `;
-            card.appendChild(header);
+        function getItemOptions(category) {
+            return (inventoryItemsByCategory[category] || []).map(item => `<option value="${item}">${item}</option>`).join('');
+        }
 
-            // Tasks list
-            const tasksDiv = document.createElement('div');
-            tasksDiv.className = 'tasks-list';
-            
-            department.tasks.forEach((task, taskIndex) => {
-                const taskId = `task-${deptIndex}-${taskIndex}`;
-                const taskDiv = createTaskItem(task, deptIndex, taskIndex, taskId);
-                tasksDiv.appendChild(taskDiv);
-                
-                // Initialize timer data
-                timers[taskId] = {
-                    startTime: null,
-                    endTime: null,
-                    elapsedSeconds: 0,
-                    isRunning: false,
-                    interval: null
+        function getUnitOptions(selected='Units') {
+            return inventoryUnits.map(unit => `<option value="${unit}" ${unit===selected?'selected':''}>${unit}</option>`).join('');
+        }
+
+        function addInventoryRow(category='Cleaning Materials', item='Detergent') {
+            const tbody = document.getElementById('inventoryTableBody');
+            const row = document.createElement('tr');
+            const rowId = `inv-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+            row.dataset.rowId = rowId;
+            row.innerHTML = `
+                <td>
+                    <select onchange="handleInventoryCategoryChange('${rowId}', this.value)">
+                        ${Object.keys(inventoryItemsByCategory).map(cat => `<option value="${cat}" ${cat===category?'selected':''}>${cat}</option>`).join('')}
+                    </select>
+                </td>
+                <td><select id="${rowId}-item">${getItemOptions(category)}</select></td>
+                <td><select id="${rowId}-unit">${getUnitOptions()}</select></td>
+                <td><input type="number" min="0" step="0.01" id="${rowId}-opening" value="0" oninput="updateInventoryBalance('${rowId}')"></td>
+                <td><input type="number" min="0" step="0.01" id="${rowId}-received" value="0" oninput="updateInventoryBalance('${rowId}')"></td>
+                <td><input type="number" min="0" step="0.01" id="${rowId}-taken" value="0" oninput="updateInventoryBalance('${rowId}')"></td>
+                <td><input type="number" min="0" step="0.01" id="${rowId}-balance" value="0" readonly></td>
+                <td><input type="text" id="${rowId}-issuedto" placeholder="Cleaner / Area"></td>
+                <td><button class="btn-add-row" style="padding:8px 14px;border-radius:10px;" onclick="removeInventoryRow('${rowId}')">Remove</button></td>`;
+            tbody.appendChild(row);
+            document.getElementById(`${rowId}-item`).value = item;
+            updateInventoryBalance(rowId);
+            syncInventoryRecordsFromTable();
+        }
+
+        function handleInventoryCategoryChange(rowId, category) {
+            document.getElementById(`${rowId}-item`).innerHTML = getItemOptions(category);
+            syncInventoryRecordsFromTable();
+        }
+
+        function updateInventoryBalance(rowId) {
+            const opening = parseFloat(document.getElementById(`${rowId}-opening`).value || 0);
+            const received = parseFloat(document.getElementById(`${rowId}-received`).value || 0);
+            const taken = parseFloat(document.getElementById(`${rowId}-taken`).value || 0);
+            const balance = opening + received - taken;
+            const balanceField = document.getElementById(`${rowId}-balance`);
+            balanceField.value = balance.toFixed(2);
+            balanceField.className = balance < 0 ? 'danger-text' : '';
+            syncInventoryRecordsFromTable();
+        }
+
+        function removeInventoryRow(rowId) {
+            const row = document.querySelector(`tr[data-row-id="${rowId}"]`);
+            if (row) row.remove();
+            syncInventoryRecordsFromTable();
+        }
+
+        function syncInventoryRecordsFromTable() {
+            const rows = Array.from(document.querySelectorAll('#inventoryTableBody tr'));
+            inventoryRecords = rows.map(row => {
+                const rowId = row.dataset.rowId;
+                const category = row.querySelector('td select').value;
+                const item = document.getElementById(`${rowId}-item`).value;
+                const unit = document.getElementById(`${rowId}-unit`).value;
+                const openingStock = parseFloat(document.getElementById(`${rowId}-opening`).value || 0);
+                const received = parseFloat(document.getElementById(`${rowId}-received`).value || 0);
+                const takenOut = parseFloat(document.getElementById(`${rowId}-taken`).value || 0);
+                const balance = parseFloat(document.getElementById(`${rowId}-balance`).value || 0);
+                const issuedTo = document.getElementById(`${rowId}-issuedto`).value;
+                return {
+                    inventoryDate: document.getElementById('inventoryDate').value,
+                    inventoryLocation: document.getElementById('inventoryLocation').value,
+                    notes: document.getElementById('inventoryNotes').value,
+                    category, item, unit, openingStock, received, takenOut, balance, issuedTo,
+                    recordedBy: document.getElementById('staffName').value,
+                    employeeId: document.getElementById('employeeId').value,
+                    timestamp: new Date().toISOString()
                 };
-                
-                timeRecords[taskId] = [];
             });
-            
-            card.appendChild(tasksDiv);
-
-            // Submit button
-            const submitDiv = document.createElement('div');
-            submitDiv.className = 'department-submit';
-            submitDiv.innerHTML = `
-                <button class="btn-submit-department" onclick="submitDepartmentTasks(${deptIndex})">
-                    📤 Submit ${department.name} Tasks
-                </button>
-                <div id="status-${deptIndex}" class="status-message"></div>
-            `;
-            card.appendChild(submitDiv);
-
-            return card;
+            document.getElementById('inventoryLineCount').textContent = inventoryRecords.length;
         }
 
-        function createTaskItem(task, deptIndex, taskIndex, taskId) {
-            const taskDiv = document.createElement('div');
-            taskDiv.className = 'task-item';
-            taskDiv.id = taskId;
-
-            taskDiv.innerHTML = `
-                <div class="task-header">
-                    <span class="task-name">${task}</span>
-                    <span class="timer-display" id="${taskId}-timer">00:00:00</span>
-                </div>
-                <div class="time-controls">
-                    <button class="btn-start" onclick="startTimer('${taskId}')" id="${taskId}-start">▶ Start</button>
-                    <button class="btn-stop" onclick="stopTimer('${taskId}')" id="${taskId}-stop" disabled>⏹ Stop</button>
-                </div>
-                <div class="time-records" id="${taskId}-records">
-                    <div class="time-record">No completed sessions yet</div>
-                </div>
-            `;
-
-            return taskDiv;
-        }
-
-        // ============================================
-        // TIMER FUNCTIONS
-        // ============================================
         function startTimer(taskId) {
             const staffName = document.getElementById('staffName').value;
-            if (!staffName) {
-                alert('Please select a staff name first');
-                return;
-            }
-
+            if (!staffName) { alert('Please select a staff name first'); return; }
             const timer = timers[taskId];
             if (timer.isRunning) return;
-
             timer.startTime = new Date();
             timer.isRunning = true;
             timer.interval = setInterval(() => updateTimerDisplay(taskId), 1000);
-
-            // Update UI
             document.getElementById(`${taskId}-start`).disabled = true;
             document.getElementById(`${taskId}-stop`).disabled = false;
-
-            // Update assigned staff
             const deptIndex = taskId.split('-')[1];
             document.getElementById(`assigned-staff-${deptIndex}`).textContent = staffName;
-            
-            // Update statistics
-            inProgressCount++;
-            updateStatistics();
+            inProgressCount++; updateStatistics();
         }
 
         function stopTimer(taskId) {
             const timer = timers[taskId];
             if (!timer.isRunning) return;
-
             timer.endTime = new Date();
             timer.isRunning = false;
             clearInterval(timer.interval);
-
-            // Calculate elapsed time
-            const elapsedMs = timer.endTime - timer.startTime;
-            timer.elapsedSeconds = Math.floor(elapsedMs / 1000);
-
-            // Record this session with ALL data
+            timer.elapsedSeconds = Math.floor((timer.endTime - timer.startTime) / 1000);
             recordTaskSession(taskId);
-
-            // Update UI
             document.getElementById(`${taskId}-start`).disabled = false;
             document.getElementById(`${taskId}-stop`).disabled = true;
-
-            // Reset timer display
             updateTimerDisplay(taskId, true);
-            
-            // Update statistics
-            inProgressCount--;
-            completedTasksCount++;
-            updateStatistics();
+            inProgressCount--; completedTasksCount++; updateStatistics(); refreshDailySummary();
         }
 
-        function updateTimerDisplay(taskId, reset = false) {
+        function updateTimerDisplay(taskId, reset=false) {
             const timer = timers[taskId];
             const display = document.getElementById(`${taskId}-timer`);
-            
-            if (reset) {
-                display.textContent = '00:00:00';
-                return;
-            }
-
+            if (reset) { display.textContent = '00:00:00'; return; }
             if (timer && timer.isRunning) {
-                const now = new Date();
-                const elapsedMs = now - timer.startTime;
-                const seconds = Math.floor(elapsedMs / 1000);
+                const seconds = Math.floor((new Date() - timer.startTime) / 1000);
                 const hours = Math.floor(seconds / 3600);
                 const minutes = Math.floor((seconds % 3600) / 60);
                 const secs = seconds % 60;
-                
-                display.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+                display.textContent = `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
             }
         }
 
-        // ============================================
-        // RECORD KEEPING - Collects ALL form data
-        // ============================================
         function recordTaskSession(taskId) {
             const timer = timers[taskId];
-            const staffName = document.getElementById('staffName').value;
-            const employeeId = document.getElementById('employeeId').value;
-            const workDate = document.getElementById('workDate').value;
-            const shiftStart = document.getElementById('shiftStart').value;
-            const shiftEnd = document.getElementById('shiftEnd').value;
-            const workLocation = document.getElementById('workLocation').value;
-            const supervisor = document.getElementById('supervisor').value;
-            const globalNotes = document.getElementById('globalNotes').value;
-            
-            // Get task details from taskId
             const [_, deptIndex, taskIndex] = taskId.split('-');
-            const department = departments[parseInt(deptIndex)].name;
-            const taskName = departments[parseInt(deptIndex)].tasks[parseInt(taskIndex)];
-
-            // Create complete session record with ALL fields
             const session = {
-                // Staff Info
-                staffName: staffName,
-                employeeId: employeeId,
-                
-                // Task Info
-                department: department,
-                taskName: taskName,
-                
-                // Timing
+                staffName: document.getElementById('staffName').value,
+                employeeId: document.getElementById('employeeId').value,
+                department: departments[parseInt(deptIndex)].name,
+                taskName: departments[parseInt(deptIndex)].tasks[parseInt(taskIndex)],
                 startTime: timer.startTime,
                 endTime: timer.endTime,
                 durationSeconds: timer.elapsedSeconds,
                 durationMinutes: Math.round(timer.elapsedSeconds / 60),
                 durationHours: (timer.elapsedSeconds / 3600).toFixed(2),
-                
-                // Work Details
-                workDate: workDate,
-                shiftStart: shiftStart,
-                shiftEnd: shiftEnd,
-                workLocation: workLocation,
-                supervisor: supervisor,
-                
-                // Additional
-                notes: globalNotes,
-                taskNotes: '', // Can be added per task if needed
-                
-                // Metadata
+                workDate: document.getElementById('workDate').value,
+                shiftStart: document.getElementById('shiftStart').value,
+                shiftEnd: document.getElementById('shiftEnd').value,
+                workLocation: document.getElementById('workLocation').value,
+                supervisor: document.getElementById('supervisor').value,
+                notes: document.getElementById('globalNotes').value,
                 submissionTimestamp: new Date().toISOString(),
-                taskId: taskId
+                taskId
             };
-
-            // Store the session
-            if (!timeRecords[taskId]) {
-                timeRecords[taskId] = [];
-            }
+            if (!timeRecords[taskId]) timeRecords[taskId] = [];
             timeRecords[taskId].push(session);
-            
-            // Update display
             updateRecordsDisplay(taskId);
         }
 
         function updateRecordsDisplay(taskId) {
             const records = timeRecords[taskId] || [];
-            const recordsDiv = document.getElementById(`${taskId}-records`);
-            
-            if (records.length === 0) {
-                recordsDiv.innerHTML = '<div class="time-record">No completed sessions yet</div>';
-                return;
-            }
-
-            let html = '';
-            records.slice(-3).reverse().forEach(record => {
-                html += `
-                    <div class="time-record">
-                        <span>${record.staffName}</span>
-                        <span>${record.durationMinutes}m</span>
-                    </div>
-                `;
-            });
-            
-            recordsDiv.innerHTML = html;
+            const div = document.getElementById(`${taskId}-records`);
+            if (!records.length) { div.innerHTML = '<div class="time-record">No completed sessions yet</div>'; return; }
+            div.innerHTML = records.slice(-3).reverse().map(record => `
+                <div class="time-record">
+                    <span>${record.staffName} • ${record.workDate}</span>
+                    <span>${record.durationMinutes}m</span>
+                </div>`).join('');
         }
 
-        // ============================================
-        // SUBMISSION FUNCTIONS - Sends ALL data to Google Sheets
-        // ============================================
+        function getAllSessions() {
+            return Object.values(timeRecords).flat();
+        }
+
+        function buildDailySummaryRows() {
+            const workDate = document.getElementById('workDate').value;
+            const selectedStaff = document.getElementById('staffName').value;
+            const sessions = getAllSessions().filter(session => {
+                const sameDate = !workDate || session.workDate === workDate;
+                const sameStaff = !selectedStaff || session.staffName === selectedStaff;
+                return sameDate && sameStaff;
+            });
+            const grouped = {};
+            sessions.forEach(session => {
+                const key = `${session.staffName}||${session.department}`;
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        cleaner: session.staffName,
+                        area: session.department,
+                        tasks: new Set(),
+                        sessions: 0,
+                        minutes: 0,
+                        hours: 0,
+                        firstStart: session.startTime,
+                        lastFinish: session.endTime
+                    };
+                }
+                grouped[key].tasks.add(session.taskName);
+                grouped[key].sessions += 1;
+                grouped[key].minutes += Number(session.durationMinutes || 0);
+                grouped[key].hours += Number(session.durationHours || 0);
+                if (new Date(session.startTime) < new Date(grouped[key].firstStart)) grouped[key].firstStart = session.startTime;
+                if (new Date(session.endTime) > new Date(grouped[key].lastFinish)) grouped[key].lastFinish = session.endTime;
+            });
+            return Object.values(grouped).map(row => ({
+                ...row,
+                tasksDone: Array.from(row.tasks).join(', '),
+                hours: row.hours.toFixed(2),
+                firstStartText: row.firstStart ? new Date(row.firstStart).toLocaleTimeString('en-ZA', {hour:'2-digit', minute:'2-digit'}) : '-',
+                lastFinishText: row.lastFinish ? new Date(row.lastFinish).toLocaleTimeString('en-ZA', {hour:'2-digit', minute:'2-digit'}) : '-'
+            }));
+        }
+
+        function refreshDailySummary() {
+            const rows = buildDailySummaryRows();
+            const tbody = document.getElementById('dailySummaryTableBody');
+            const staffName = document.getElementById('staffName').value || '-';
+            const workDate = document.getElementById('workDate').value || '-';
+            document.getElementById('summaryCleaner').textContent = staffName;
+            document.getElementById('summaryDate').textContent = workDate;
+            document.getElementById('summaryAreas').textContent = rows.length;
+            const totalHours = rows.reduce((sum, row) => sum + Number(row.hours), 0).toFixed(2);
+            document.getElementById('summaryHours').textContent = totalHours;
+            document.getElementById('dailyHoursTotal').textContent = totalHours;
+            if (!rows.length) {
+                tbody.innerHTML = '<tr><td colspan="8">No task activity captured yet.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = rows.map(row => `
+                <tr>
+                    <td>${row.cleaner}</td>
+                    <td><span class="summary-chip">${row.area}</span></td>
+                    <td>${row.tasksDone}</td>
+                    <td>${row.sessions}</td>
+                    <td>${row.minutes}</td>
+                    <td>${row.hours}</td>
+                    <td>${row.firstStartText}</td>
+                    <td>${row.lastFinishText}</td>
+                </tr>`).join('');
+        }
+
         async function submitDepartmentTasks(deptIndex) {
             const department = departments[deptIndex];
             const staffName = document.getElementById('staffName').value;
             const statusDiv = document.getElementById(`status-${deptIndex}`);
-            
-            if (!staffName) {
-                showStatus(statusDiv, '❌ Please select a staff name', 'error');
-                return;
-            }
-
-            // Collect ALL task data for this department
+            if (!staffName) { showStatus(statusDiv, '❌ Please select a staff name', 'error'); return; }
             const taskData = [];
-            let totalTasks = 0;
-            
             department.tasks.forEach((task, taskIndex) => {
                 const taskId = `task-${deptIndex}-${taskIndex}`;
-                const sessions = timeRecords[taskId] || [];
-                
-                sessions.forEach(session => {
-                    taskData.push({
-                        // Staff Information
-                        staffName: session.staffName,
-                        employeeId: session.employeeId,
-                        
-                        // Department & Task
-                        department: session.department,
-                        taskName: session.taskName,
-                        
-                        // Timing Data
-                        startTime: session.startTime,
-                        endTime: session.endTime,
-                        durationSeconds: session.durationSeconds,
-                        durationMinutes: session.durationMinutes,
-                        durationHours: session.durationHours,
-                        
-                        // Work Details
-                        workDate: session.workDate,
-                        shiftStart: session.shiftStart,
-                        shiftEnd: session.shiftEnd,
-                        workLocation: session.workLocation,
-                        supervisor: session.supervisor,
-                        
-                        // Notes
-                        notes: session.notes,
-                        taskNotes: session.taskNotes,
-                        
-                        // Metadata
-                        submittedBy: staffName,
-                        submissionTime: new Date().toISOString()
-                    });
-                    totalTasks++;
-                });
+                (timeRecords[taskId] || []).forEach(session => taskData.push({ ...session, submittedBy: staffName, submissionTime: new Date().toISOString() }));
             });
-
-            if (taskData.length === 0) {
-                showStatus(statusDiv, '❌ No completed tasks to submit', 'error');
-                return;
-            }
-
-            // Submit to Google Sheets
+            if (!taskData.length) { showStatus(statusDiv, '❌ No completed tasks to submit', 'error'); return; }
             await submitToGoogleSheets({
                 type: 'department_submission',
                 department: department.name,
                 tasks: taskData,
-                submittedBy: staffName,
-                totalTasks: totalTasks,
+                totalTasks: taskData.length,
                 timestamp: new Date().toISOString(),
-                
-                // Include global form data
-                globalData: {
-                    staffName: staffName,
-                    employeeId: document.getElementById('employeeId').value,
-                    workDate: document.getElementById('workDate').value,
-                    shiftStart: document.getElementById('shiftStart').value,
-                    shiftEnd: document.getElementById('shiftEnd').value,
-                    workLocation: document.getElementById('workLocation').value,
-                    supervisor: document.getElementById('supervisor').value,
-                    globalNotes: document.getElementById('globalNotes').value
-                }
+                globalData: collectGlobalData()
             }, statusDiv, deptIndex);
         }
 
         async function submitAllDepartments() {
             const globalStatus = document.getElementById('globalStatus');
             const staffName = document.getElementById('staffName').value;
-            
-            if (!staffName) {
-                showStatus(globalStatus, '❌ Please select a staff name', 'error');
-                return;
-            }
-
-            let allTasks = [];
-            let totalCount = 0;
-
-            // Collect data from all departments
-            departments.forEach((dept, deptIndex) => {
-                dept.tasks.forEach((task, taskIndex) => {
-                    const taskId = `task-${deptIndex}-${taskIndex}`;
-                    const sessions = timeRecords[taskId] || [];
-                    
-                    sessions.forEach(session => {
-                        allTasks.push(session);
-                        totalCount++;
-                    });
-                });
-            });
-
-            if (allTasks.length === 0) {
-                showStatus(globalStatus, '❌ No completed tasks to submit', 'error');
-                return;
-            }
-
-            // Submit all at once
+            if (!staffName) { showStatus(globalStatus, '❌ Please select a staff name', 'error'); return; }
+            const allTasks = getAllSessions();
+            if (!allTasks.length) { showStatus(globalStatus, '❌ No completed tasks to submit', 'error'); return; }
             await submitToGoogleSheets({
                 type: 'bulk_submission',
                 tasks: allTasks,
-                submittedBy: staffName,
-                totalTasks: totalCount,
+                totalTasks: allTasks.length,
                 timestamp: new Date().toISOString(),
-                globalData: {
-                    staffName: staffName,
-                    employeeId: document.getElementById('employeeId').value,
-                    workDate: document.getElementById('workDate').value,
-                    shiftStart: document.getElementById('shiftStart').value,
-                    shiftEnd: document.getElementById('shiftEnd').value,
-                    workLocation: document.getElementById('workLocation').value,
-                    supervisor: document.getElementById('supervisor').value,
-                    globalNotes: document.getElementById('globalNotes').value
-                }
+                globalData: collectGlobalData(),
+                dailySummary: buildDailySummaryRows(),
+                inventory: inventoryRecords
             }, globalStatus);
         }
 
-        async function submitToGoogleSheets(data, statusDiv, deptIndex = null) {
+        async function submitInventory() {
+            syncInventoryRecordsFromTable();
+            const statusDiv = document.getElementById('inventoryStatus');
+            if (!document.getElementById('staffName').value) { showStatus(statusDiv, '❌ Please select a staff member before submitting inventory', 'error'); return; }
+            if (!inventoryRecords.length) { showStatus(statusDiv, '❌ Add at least one inventory line', 'error'); return; }
+            await submitToGoogleSheets({
+                type: 'inventory_submission',
+                inventoryDate: document.getElementById('inventoryDate').value,
+                inventoryLocation: document.getElementById('inventoryLocation').value,
+                notes: document.getElementById('inventoryNotes').value,
+                inventory: inventoryRecords,
+                totalTasks: inventoryRecords.length,
+                timestamp: new Date().toISOString(),
+                globalData: collectGlobalData()
+            }, statusDiv);
+        }
+
+        async function submitDailySummary() {
+            const statusDiv = document.getElementById('summaryStatus');
+            const summaryRows = buildDailySummaryRows();
+            if (!document.getElementById('staffName').value) { showStatus(statusDiv, '❌ Please select a staff member before submitting summary', 'error'); return; }
+            if (!summaryRows.length) { showStatus(statusDiv, '❌ No daily summary records to submit', 'error'); return; }
+            await submitToGoogleSheets({
+                type: 'daily_summary_submission',
+                summaryDate: document.getElementById('workDate').value,
+                summaryRows,
+                totalTasks: summaryRows.length,
+                timestamp: new Date().toISOString(),
+                globalData: collectGlobalData()
+            }, statusDiv);
+        }
+
+        function collectGlobalData() {
+            return {
+                staffName: document.getElementById('staffName').value,
+                employeeId: document.getElementById('employeeId').value,
+                workDate: document.getElementById('workDate').value,
+                shiftStart: document.getElementById('shiftStart').value,
+                shiftEnd: document.getElementById('shiftEnd').value,
+                workLocation: document.getElementById('workLocation').value,
+                supervisor: document.getElementById('supervisor').value,
+                globalNotes: document.getElementById('globalNotes').value
+            };
+        }
+
+        async function submitToGoogleSheets(data, statusDiv, deptIndex=null) {
             try {
                 showStatus(statusDiv, 'Submitting...', 'info');
-                
-                console.log('Submitting data to Google Sheets:', data);
-
-                const response = await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                await fetch(GOOGLE_APPS_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-
-                showStatus(statusDiv, `✅ ${data.totalTasks || data.tasks.length} tasks submitted successfully!`, 'success');
-                
-                // Clear submitted sessions if it was a department submission
-                if (deptIndex !== null) {
-                    clearDepartmentSessions(deptIndex);
-                }
-                
-                // Update statistics
-                updateStatistics();
-
+                showStatus(statusDiv, `✅ ${data.totalTasks || 0} record(s) submitted successfully!`, 'success');
+                if (deptIndex !== null) clearDepartmentSessions(deptIndex);
             } catch (error) {
-                console.error('Submission error:', error);
                 showStatus(statusDiv, '❌ Submission failed: ' + error.message, 'error');
             }
         }
 
-        // ============================================
-        // UTILITY FUNCTIONS
-        // ============================================
         function showStatus(element, message, type) {
             element.className = 'status-message ' + type;
             element.textContent = message;
             element.style.display = 'block';
-            
-            if (type !== 'info') {
-                setTimeout(() => {
-                    element.style.display = 'none';
-                }, 5000);
-            }
+            if (type !== 'info') setTimeout(() => { element.style.display = 'none'; }, 5000);
         }
 
         function clearDepartmentSessions(deptIndex) {
-            const department = departments[deptIndex];
-            department.tasks.forEach((task, taskIndex) => {
+            departments[deptIndex].tasks.forEach((task, taskIndex) => {
                 const taskId = `task-${deptIndex}-${taskIndex}`;
                 timeRecords[taskId] = [];
                 updateRecordsDisplay(taskId);
             });
+            refreshDailySummary();
         }
 
         function resetAllTimers() {
-            if (confirm('Are you sure you want to reset all timers and clear all records?')) {
-                // Reset all timers
-                Object.keys(timers).forEach(taskId => {
-                    const timer = timers[taskId];
-                    if (timer.interval) {
-                        clearInterval(timer.interval);
-                    }
-                    timer.isRunning = false;
-                    timer.startTime = null;
-                    timer.endTime = null;
-                    timer.elapsedSeconds = 0;
-                    
-                    // Reset UI
-                    document.getElementById(`${taskId}-start`).disabled = false;
-                    document.getElementById(`${taskId}-stop`).disabled = true;
-                    document.getElementById(`${taskId}-timer`).textContent = '00:00:00';
-                });
-                
-                // Clear all records
-                Object.keys(timeRecords).forEach(taskId => {
-                    timeRecords[taskId] = [];
-                    updateRecordsDisplay(taskId);
-                });
-                
-                // Reset counts
-                completedTasksCount = 0;
-                inProgressCount = 0;
-                updateStatistics();
-                
-                showStatus(document.getElementById('globalStatus'), '✅ All timers reset', 'success');
-            }
+            if (!confirm('Are you sure you want to reset all timers and clear all task records?')) return;
+            Object.keys(timers).forEach(taskId => {
+                const timer = timers[taskId];
+                if (timer.interval) clearInterval(timer.interval);
+                timer.isRunning = false; timer.startTime = null; timer.endTime = null; timer.elapsedSeconds = 0;
+                document.getElementById(`${taskId}-start`).disabled = false;
+                document.getElementById(`${taskId}-stop`).disabled = true;
+                document.getElementById(`${taskId}-timer`).textContent = '00:00:00';
+            });
+            Object.keys(timeRecords).forEach(taskId => { timeRecords[taskId] = []; updateRecordsDisplay(taskId); });
+            completedTasksCount = 0; inProgressCount = 0; updateStatistics(); refreshDailySummary();
+            showStatus(document.getElementById('globalStatus'), '✅ All timers reset', 'success');
         }
 
         function exportAllData() {
+            syncInventoryRecordsFromTable();
             const data = {
-                staffInfo: {
-                    staffName: document.getElementById('staffName').value,
-                    employeeId: document.getElementById('employeeId').value,
-                    workDate: document.getElementById('workDate').value,
-                    shiftStart: document.getElementById('shiftStart').value,
-                    shiftEnd: document.getElementById('shiftEnd').value,
-                    workLocation: document.getElementById('workLocation').value,
-                    supervisor: document.getElementById('supervisor').value,
-                    globalNotes: document.getElementById('globalNotes').value
+                staffInfo: collectGlobalData(),
+                inventoryHeader: {
+                    inventoryDate: document.getElementById('inventoryDate').value,
+                    inventoryLocation: document.getElementById('inventoryLocation').value,
+                    inventoryNotes: document.getElementById('inventoryNotes').value
                 },
+                inventoryRecords,
                 taskRecords: timeRecords,
+                dailySummary: buildDailySummaryRows(),
                 exportTime: new Date().toISOString()
             };
-            
-            const jsonStr = JSON.stringify(data, null, 2);
-            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `cleaning-data-${new Date().toISOString()}.json`;
+            a.download = `cleaning-data-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
             a.click();
-            
+            URL.revokeObjectURL(url);
             showStatus(document.getElementById('globalStatus'), '✅ Data exported successfully', 'success');
         }
 
         function updateStatistics() {
             document.getElementById('completedTasks').textContent = completedTasksCount;
             document.getElementById('inProgressTasks').textContent = inProgressCount;
-            
-            const staffName = document.getElementById('staffName').value;
-            document.getElementById('staffOnDuty').textContent = staffName ? '1' : '0';
-            
-            // Calculate total tasks (5 departments * 8 tasks)
+            document.getElementById('staffOnDuty').textContent = document.getElementById('staffName').value ? '1' : '0';
             document.getElementById('totalTasks').textContent = departments.length * 8;
+            syncInventoryRecordsFromTable();
         }
 
         function updateGlobalTimestamp() {
             const now = new Date();
-            document.getElementById('globalTimestamp').textContent = 
-                `Last updated: ${now.toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })}`;
+            document.getElementById('globalTimestamp').textContent = `Last updated: ${now.toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' })}`;
         }
 
-        // ============================================
-        // EVENT LISTENERS
-        // ============================================
-        document.getElementById('staffName').addEventListener('change', updateStatistics);
+        ['staffName','employeeId','workDate','shiftStart','shiftEnd','workLocation','supervisor','globalNotes','inventoryDate','inventoryLocation','inventoryNotes']
+            .forEach(id => {
+                window.addEventListener('load', () => {
+                    const el = document.getElementById(id);
+                    if (el) el.addEventListener('change', () => { syncInventoryRecordsFromTable(); refreshDailySummary(); updateStatistics(); });
+                    if (el) el.addEventListener('input', () => { syncInventoryRecordsFromTable(); refreshDailySummary(); updateStatistics(); });
+                });
+            });
 
-        // Initialize on page load
         window.onload = initializeApp;
     </script>
 </body>
