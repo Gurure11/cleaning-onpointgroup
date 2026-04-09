@@ -158,6 +158,9 @@
             .task-header, .time-record { flex-direction: column; align-items: flex-start; }
         }
     </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -308,7 +311,8 @@
 
         <div class="global-controls">
             <button class="btn-global" onclick="submitAllDepartments()">📤 SUBMIT ALL DEPARTMENTS</button>
-            <button class="btn-global" onclick="exportAllData()">📊 EXPORT ALL DATA</button>
+            <button class="btn-global" onclick="downloadExcelReport()">📥 DOWNLOAD EXCEL</button>
+            <button class="btn-global" onclick="downloadPdfReport()">🧾 DOWNLOAD PDF</button>
             <button class="btn-global" onclick="resetAllTimers()">🔄 RESET ALL</button>
         </div>
 
@@ -769,28 +773,199 @@
             showStatus(document.getElementById('globalStatus'), '✅ All timers reset', 'success');
         }
 
-        function exportAllData() {
+        function getReportRows() {
             syncInventoryRecordsFromTable();
-            const data = {
-                staffInfo: collectGlobalData(),
-                inventoryHeader: {
-                    inventoryDate: document.getElementById('inventoryDate').value,
-                    inventoryLocation: document.getElementById('inventoryLocation').value,
-                    inventoryNotes: document.getElementById('inventoryNotes').value
-                },
-                inventoryRecords,
-                taskRecords: timeRecords,
-                dailySummary: buildDailySummaryRows(),
-                exportTime: new Date().toISOString()
-            };
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const staff = collectGlobalData();
+            const dailySummary = buildDailySummaryRows();
+            const sessions = getAllSessions().filter(session => {
+                const sameDate = !staff.workDate || session.workDate === staff.workDate;
+                const sameStaff = !staff.staffName || session.staffName === staff.staffName;
+                return sameDate && sameStaff;
+            });
+            return { staff, dailySummary, sessions, inventory: inventoryRecords.slice() };
+        }
+
+        function downloadExcelReport() {
+            const { staff, dailySummary, sessions, inventory } = getReportRows();
+            let htmlTable = `
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+                        th, td { border: 1px solid #999; padding: 8px; text-align: left; }
+                        th { background: #d9e2f3; }
+                        h2, h3 { color: #1e3c72; }
+                    </style>
+                </head>
+                <body>
+                    <h2>Onpoint Cleaning Report</h2>
+                    <table>
+                        <tr><th>Cleaner</th><td>${staff.staffName || ''}</td><th>Employee ID</th><td>${staff.employeeId || ''}</td></tr>
+                        <tr><th>Work Date</th><td>${staff.workDate || ''}</td><th>Location</th><td>${staff.workLocation || ''}</td></tr>
+                        <tr><th>Shift Start</th><td>${staff.shiftStart || ''}</td><th>Shift End</th><td>${staff.shiftEnd || ''}</td></tr>
+                        <tr><th>Supervisor</th><td>${staff.supervisor || ''}</td><th>Notes</th><td>${staff.globalNotes || ''}</td></tr>
+                    </table>
+
+                    <h3>Daily Summary</h3>
+                    <table>
+                        <tr>
+                            <th>Cleaner</th><th>Area Cleaned</th><th>Tasks Done</th><th>Sessions</th>
+                            <th>Time Taken (Min)</th><th>Total Hours</th><th>First Start</th><th>Last Finish</th>
+                        </tr>
+                        ${dailySummary.length ? dailySummary.map(row => `
+                            <tr>
+                                <td>${row.cleaner}</td>
+                                <td>${row.area}</td>
+                                <td>${row.tasksDone}</td>
+                                <td>${row.sessions}</td>
+                                <td>${row.minutes}</td>
+                                <td>${row.hours}</td>
+                                <td>${row.firstStartText}</td>
+                                <td>${row.lastFinishText}</td>
+                            </tr>`).join('') : '<tr><td colspan="8">No daily summary records</td></tr>'}
+                    </table>
+
+                    <h3>Task Sessions</h3>
+                    <table>
+                        <tr>
+                            <th>Department</th><th>Task</th><th>Start</th><th>End</th>
+                            <th>Duration Seconds</th><th>Duration Minutes</th><th>Duration Hours</th>
+                        </tr>
+                        ${sessions.length ? sessions.map(row => `
+                            <tr>
+                                <td>${row.department || ''}</td>
+                                <td>${row.taskName || ''}</td>
+                                <td>${row.startTime ? new Date(row.startTime).toLocaleString('en-ZA') : ''}</td>
+                                <td>${row.endTime ? new Date(row.endTime).toLocaleString('en-ZA') : ''}</td>
+                                <td>${row.durationSeconds || 0}</td>
+                                <td>${row.durationMinutes || 0}</td>
+                                <td>${row.durationHours || 0}</td>
+                            </tr>`).join('') : '<tr><td colspan="7">No task sessions</td></tr>'}
+                    </table>
+
+                    <h3>Inventory</h3>
+                    <table>
+                        <tr>
+                            <th>Category</th><th>Item</th><th>Unit</th><th>Opening Stock</th><th>Received</th>
+                            <th>Taken Out</th><th>Balance</th><th>Issued To / Area</th>
+                        </tr>
+                        ${inventory.length ? inventory.map(row => `
+                            <tr>
+                                <td>${row.category || ''}</td>
+                                <td>${row.item || ''}</td>
+                                <td>${row.unit || ''}</td>
+                                <td>${row.openingStock || 0}</td>
+                                <td>${row.received || 0}</td>
+                                <td>${row.takenOut || 0}</td>
+                                <td>${row.balance || 0}</td>
+                                <td>${row.issuedTo || ''}</td>
+                            </tr>`).join('') : '<tr><td colspan="8">No inventory records</td></tr>'}
+                    </table>
+                </body>
+                </html>
+            `;
+            const blob = new Blob([htmlTable], { type: 'application/vnd.ms-excel' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `cleaning-data-${new Date().toISOString().replace(/[:.]/g,'-')}.json`;
+            a.download = `onpoint-cleaning-report-${new Date().toISOString().slice(0,10)}.xls`;
             a.click();
             URL.revokeObjectURL(url);
-            showStatus(document.getElementById('globalStatus'), '✅ Data exported successfully', 'success');
+            showStatus(document.getElementById('globalStatus'), '✅ Excel report downloaded', 'success');
+        }
+
+        function downloadPdfReport() {
+            const { jsPDF } = window.jspdf;
+            const { staff, dailySummary, sessions, inventory } = getReportRows();
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const todayText = new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Johannesburg' });
+
+            doc.setFontSize(16);
+            doc.text('Onpoint Cleaning Report', 14, 15);
+            doc.setFontSize(10);
+            doc.text(`Generated: ${todayText}`, 14, 21);
+
+            doc.autoTable({
+                startY: 26,
+                head: [['Cleaner', 'Employee ID', 'Work Date', 'Location', 'Shift', 'Supervisor']],
+                body: [[
+                    staff.staffName || '',
+                    staff.employeeId || '',
+                    staff.workDate || '',
+                    staff.workLocation || '',
+                    `${staff.shiftStart || ''} - ${staff.shiftEnd || ''}`,
+                    staff.supervisor || ''
+                ]],
+                styles: { fontSize: 9 }
+            });
+
+            let y = doc.lastAutoTable.finalY + 8;
+            doc.setFontSize(12);
+            doc.text('Daily Summary', 14, y);
+            doc.autoTable({
+                startY: y + 3,
+                head: [['Cleaner', 'Area Cleaned', 'Tasks Done', 'Sessions', 'Minutes', 'Hours', 'First Start', 'Last Finish']],
+                body: (dailySummary.length ? dailySummary : [{
+                    cleaner: 'No records', area: '', tasksDone: '', sessions: '', minutes: '', hours: '', firstStartText: '', lastFinishText: ''
+                }]).map(r => [r.cleaner, r.area, r.tasksDone, r.sessions, r.minutes, r.hours, r.firstStartText, r.lastFinishText]),
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [30, 60, 114] }
+            });
+
+            y = doc.lastAutoTable.finalY + 8;
+            if (y > 240) { doc.addPage(); y = 15; }
+            doc.setFontSize(12);
+            doc.text('Task Sessions', 14, y);
+            doc.autoTable({
+                startY: y + 3,
+                head: [['Department', 'Task', 'Start', 'End', 'Seconds', 'Minutes', 'Hours']],
+                body: (sessions.length ? sessions : [{
+                    department: 'No records', taskName: '', startTime: '', endTime: '', durationSeconds: '', durationMinutes: '', durationHours: ''
+                }]).map(r => [
+                    r.department || '',
+                    r.taskName || '',
+                    r.startTime ? new Date(r.startTime).toLocaleString('en-ZA') : '',
+                    r.endTime ? new Date(r.endTime).toLocaleString('en-ZA') : '',
+                    r.durationSeconds || '',
+                    r.durationMinutes || '',
+                    r.durationHours || ''
+                ]),
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [30, 60, 114] }
+            });
+
+            y = doc.lastAutoTable.finalY + 8;
+            if (y > 240) { doc.addPage(); y = 15; }
+            doc.setFontSize(12);
+            doc.text('Inventory', 14, y);
+            doc.autoTable({
+                startY: y + 3,
+                head: [['Category', 'Item', 'Unit', 'Opening', 'Received', 'Taken Out', 'Balance', 'Issued To']],
+                body: (inventory.length ? inventory : [{
+                    category: 'No records', item: '', unit: '', openingStock: '', received: '', takenOut: '', balance: '', issuedTo: ''
+                }]).map(r => [
+                    r.category || '',
+                    r.item || '',
+                    r.unit || '',
+                    r.openingStock || '',
+                    r.received || '',
+                    r.takenOut || '',
+                    r.balance || '',
+                    r.issuedTo || ''
+                ]),
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [30, 60, 114] }
+            });
+
+            doc.save(`onpoint-cleaning-report-${new Date().toISOString().slice(0,10)}.pdf`);
+            showStatus(document.getElementById('globalStatus'), '✅ PDF report downloaded', 'success');
+        }
+
+        function exportAllData() {
+            downloadExcelReport();
         }
 
         function updateStatistics() {
